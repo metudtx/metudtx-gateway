@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>METU DTX Gateway</title>
+  <meta name="description" content="Access METU DTX institutional services, the Digital Transformation Platform, and AI4GTech Anatolia EDIH services from a single gateway.">
+  <style>
+    :root {
+      --bg: #f7faf9;
+      --panel: #ffffff;
+      --ink: #10201d;
+      --muted: #5c6f6a;
+      --line: #dfe9e6;
+      --brand: #0f766e;
+      --brand-dark: #0b4f4a;
+      --soft: #e7f4f1;
+      --shadow: 0 24px 70px rgba(16, 32, 29, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 15% 5%, rgba(15, 118, 110, 0.16), transparent 30%),
+        radial-gradient(circle at 90% 15%, rgba(38, 166, 154, 0.14), transparent 28%),
+        var(--bg);
+      color: var(--ink);
+    }
+
+    .page-shell {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 36px 0 32px;
+    }
+
+    header.topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 18px 0;
+    }
+
+    .brand {
+      font-weight: 850;
+      letter-spacing: -0.04em;
+      font-size: 1.35rem;
+    }
+
+    .brand span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 650;
+      letter-spacing: 0;
+      margin-top: 2px;
+    }
+
+    nav {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.94rem;
+    }
+
+    nav a:hover {
+      color: var(--brand-dark);
+    }
+
+    .hero {
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      padding: 56px 20px 46px;
+    }
+
+    .eyebrow {
+      color: var(--brand);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(3rem, 9vw, 6.5rem);
+      line-height: 0.94;
+      letter-spacing: -0.07em;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 28px auto 0;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 2vw, 1.3rem);
+      line-height: 1.6;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 34px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 22px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 800;
+      border: 1px solid var(--line);
+    }
+
+    .button.primary {
+      background: var(--brand);
+      color: #fff;
+      border-color: var(--brand);
+    }
+
+    .button.primary:hover {
+      background: var(--brand-dark);
+    }
+
+    .button.secondary {
+      background: rgba(255, 255, 255, 0.75);
+      color: var(--ink);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin: 18px 0 32px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      padding: 26px;
+      min-height: 280px;
+      box-shadow: var(--shadow);
+      text-decoration: none;
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(15, 118, 110, 0.35);
+      box-shadow: 0 30px 90px rgba(16, 32, 29, 0.16);
+    }
+
+    .card-kicker {
+      color: var(--brand);
+      font-size: 0.78rem;
+      font-weight: 850;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .card h2 {
+      margin: 18px 0 12px;
+      font-size: 1.35rem;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .card-link {
+      margin-top: auto;
+      color: var(--brand-dark);
+      font-weight: 850;
+      padding-top: 22px;
+    }
+
+    .positioning {
+      background: var(--soft);
+      border: 1px solid rgba(15, 118, 110, 0.18);
+      border-radius: 30px;
+      padding: 34px;
+      text-align: center;
+      margin-top: 28px;
+    }
+
+    .positioning h2 {
+      margin: 0 0 12px;
+      font-size: clamp(1.6rem, 4vw, 2.5rem);
+      letter-spacing: -0.05em;
+    }
+
+    .positioning p {
+      max-width: 780px;
+      margin: 0 auto;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 1.05rem;
+    }
+
+    .evidence {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .metric {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--brand-dark);
+      font-size: 1.65rem;
+      letter-spacing: -0.04em;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.4;
+      font-size: 0.94rem;
+    }
+
+    footer {
+      margin-top: 28px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    footer a {
+      color: var(--brand-dark);
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    @media (max-width: 960px) {
+      .cards,
+      .evidence {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 680px) {
+      .page-shell {
+        width: min(100% - 28px, 1120px);
+        padding-top: 18px;
+      }
+
+      header.topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      nav {
+        justify-content: flex-start;
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 58px 0 40px;
+      }
+
+      .cards,
+      .evidence {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        min-height: 220px;
+      }
+
+      .positioning {
+        padding: 28px 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <header class="topbar">
+      <div class="brand">
+        METU DTX
+        <span>Digital Transformation & Innovation Center</span>
+      </div>
+      <nav aria-label="Main navigation">
+        <a href="https://portal.metudtx.com">Platform</a>
+        <a href="https://dtx.metu.edu.tr">Main Website</a>
+        <a href="https://ai4gtech.metudtx.com">AI4GTech Anatolia</a>
+        <a href="mailto:info@metudtx.com">Contact</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Middle East Technical University</div>
+      <h1>METU DTX Gateway</h1>
+      <p class="lead">
+        Access METU DTX institutional services, the Digital Transformation Platform, and AI4GTech Anatolia EDIH services from a single gateway.
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="https://portal.metudtx.com">Enter Digital Transformation Platform</a>
+        <a class="button secondary" href="https://dtx.metu.edu.tr">Visit Main Website</a>
+      </div>
+    </section>
+
+    <section class="cards" aria-label="METU DTX access points">
+      <a class="card" href="https://portal.metudtx.com">
+        <span class="card-kicker">Platform</span>
+        <h2>Digital Transformation Platform</h2>
+        <p>Start or continue company registration, self-assessment, maturity analysis and transformation roadmap activities.</p>
+        <span class="card-link">Open platform landing</span>
+      </a>
+
+      <a class="card" href="https://dtx.metu.edu.tr">
+        <span class="card-kicker">Institutional</span>
+        <h2>METU DTX Main Website</h2>
+        <p>Learn about METU DTX, its institutional structure, laboratories, methodology and services.</p>
+        <span class="card-link">Visit main website</span>
+      </a>
+
+      <a class="card" href="https://ai4gtech.metudtx.com">
+        <span class="card-kicker">EDIH</span>
+        <h2>AI4GTech Anatolia</h2>
+        <p>Access AI, green and twin transformation services under the AI4GTech Anatolia European Digital Innovation Hub.</p>
+        <span class="card-link">Explore EDIH services</span>
+      </a>
+
+      <a class="card" href="mailto:info@metudtx.com">
+        <span class="card-kicker">Contact</span>
+        <h2>Apply or Contact</h2>
+        <p>Contact METU DTX to discuss digital maturity assessment, roadmap, test-before-invest, training or collaboration needs.</p>
+        <span class="card-link">Contact us</span>
+      </a>
+    </section>
+
+    <section class="positioning">
+      <h2>Digital, AI, Green and Twin Transformation for Industry</h2>
+      <p>
+        METU DTX supports industrial companies through maturity assessment, transformation roadmapping, test-before-invest infrastructure, innovation support, training and ecosystem access.
+      </p>
+    </section>
+
+    <section class="evidence" aria-label="METU DTX experience indicators">
+      <div class="metric">
+        <strong>80+</strong>
+        <span>field applications under METU DTX experience</span>
+      </div>
+      <div class="metric">
+        <strong>100+</strong>
+        <span>digital maturity analysis and roadmap experience</span>
+      </div>
+      <div class="metric">
+        <strong>15+ years</strong>
+        <span>university-industry collaboration and transformation expertise</span>
+      </div>
+      <div class="metric">
+        <strong>Cross-sector</strong>
+        <span>manufacturing know-how across automotive, machinery and process-intensive sectors</span>
+      </div>
+    </section>
+
+    <footer>
+      <p>
+        METU DTX — Middle East Technical University Digital Transformation & Innovation Center<br>
+        <a href="mailto:info@metudtx.com">info@metudtx.com</a> · Ankara, Türkiye
+      </p>
+    </footer>
+  </main>
+</body>
+</html>

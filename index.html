@@ -590,6 +590,42 @@
       font-weight: 820;
     }
 
+
+    .lang-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 8px 22px rgba(15, 31, 29, 0.05);
+    }
+
+    .lang-switch a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .lang-switch a.active {
+      background: var(--teal);
+      color: #fff;
+    }
+
+    .lang-switch a:not(.active):hover {
+      color: var(--teal-dark);
+      background: var(--soft-teal);
+    }
+
     @media (max-width: 1040px) {
       .hero,
       .split { grid-template-columns: 1fr; }
@@ -641,6 +677,10 @@
         <a href="https://ai4gtech.metudtx.com">AI4GTech</a>
         <a href="https://dtx.metu.edu.tr">Main Website</a>
         <a href="mailto:info@metudtx.com">Contact</a>
+        <span class="lang-switch" aria-label="Language selection">
+          <a class="active" href="/" hreflang="en" lang="en" aria-current="page">EN</a>
+          <a href="/tr/" hreflang="tr" lang="tr">TR</a>
+        </span>
         <a class="nav-cta" href="https://portal.metudtx.com">Start Assessment</a>
       </nav>
     </header>

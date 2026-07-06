@@ -1,0 +1,869 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>METU DTX | Dijital Dönüşüm Geçidi</title>
+  <meta name="description" content="METU DTX; dijital olgunluk değerlendirmesi, dönüşüm yol haritası, AI4GTech Anatolia EDIH hizmetleri ve kurumsal bilgiye erişim için ana geçit sayfasıdır.">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <style>
+    :root {
+      --bg: #f6faf9;
+      --panel: #ffffff;
+      --ink: #0f1f1d;
+      --muted: #61736f;
+      --line: #dfe9e6;
+      --teal: #0f766e;
+      --teal-dark: #0b4f4a;
+      --navy: #243c7a;
+      --navy-dark: #172554;
+      --green: #4f9f67;
+      --soft-teal: #e7f4f1;
+      --soft-blue: #eef3ff;
+      --soft-green: #edf7ef;
+      --warning: #fff8ed;
+      --shadow: 0 24px 70px rgba(15, 31, 29, 0.10);
+      --shadow-soft: 0 16px 46px rgba(15, 31, 29, 0.07);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 12% 4%, rgba(15, 118, 110, 0.16), transparent 28%),
+        radial-gradient(circle at 92% 10%, rgba(36, 60, 122, 0.13), transparent 30%),
+        linear-gradient(180deg, #f7fbfa 0%, #f4f8f7 100%);
+      color: var(--ink);
+    }
+
+    a { color: inherit; }
+
+    .page-shell {
+      width: min(1160px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 34px 0 36px;
+    }
+
+    header.topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 16px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      display: block;
+      width: 208px;
+      max-width: min(48vw, 208px);
+      height: auto;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: linear-gradient(135deg, var(--teal-dark), var(--navy));
+      box-shadow: 0 12px 32px rgba(15, 118, 110, 0.24);
+      font-weight: 900;
+      letter-spacing: -0.08em;
+      font-size: 1.05rem;
+    }
+
+    .brand-copy strong {
+      display: block;
+      font-size: 1.08rem;
+      letter-spacing: -0.045em;
+    }
+
+    .brand-copy span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 680;
+    }
+
+    nav {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 780;
+      font-size: 0.94rem;
+    }
+
+    nav a:hover { color: var(--teal-dark); }
+
+    nav a.nav-cta {
+      color: #fff;
+      background: var(--teal);
+      padding: 10px 15px;
+      border-radius: 999px;
+    }
+
+    nav a.nav-cta:hover { background: var(--teal-dark); color: #fff; }
+
+    .hero {
+      min-height: 570px;
+      display: grid;
+      grid-template-columns: 1.04fr 0.96fr;
+      gap: 42px;
+      align-items: center;
+      padding: 58px 0 44px;
+    }
+
+    .eyebrow {
+      color: var(--teal);
+      font-size: 0.82rem;
+      font-weight: 860;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.9rem, 7vw, 6.2rem);
+      line-height: 0.95;
+      letter-spacing: -0.075em;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 26px 0 0;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 2vw, 1.27rem);
+      line-height: 1.65;
+    }
+
+    .hero-actions,
+    .card-actions,
+    .cta-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      padding: 0 24px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 860;
+      border: 1px solid var(--line);
+      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+    }
+
+    .button:hover { transform: translateY(-2px); }
+
+    .button.primary {
+      background: var(--teal);
+      color: #fff;
+      border-color: var(--teal);
+    }
+
+    .button.primary:hover { background: var(--teal-dark); }
+
+    .button.secondary {
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--ink);
+    }
+
+    .button.ghost {
+      background: transparent;
+      color: var(--teal-dark);
+      border-color: rgba(15, 118, 110, 0.24);
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 500px;
+      border-radius: 36px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.94), rgba(244,250,249,0.86));
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      padding: 28px;
+    }
+
+    .tree-bg {
+      position: absolute;
+      right: -110px;
+      bottom: -120px;
+      width: min(680px, 92%);
+      height: auto;
+      opacity: 0.055;
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+    }
+
+    .hero-visual::before {
+      content: "";
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(15,118,110,0.18), transparent 68%);
+      right: -90px;
+      top: -90px;
+    }
+
+    .hero-visual::after {
+      content: "";
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(36,60,122,0.14), transparent 70%);
+      left: -80px;
+      bottom: -80px;
+    }
+
+    .visual-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .mini-card {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 18px;
+      min-height: 128px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .mini-card strong {
+      display: block;
+      color: var(--ink);
+      letter-spacing: -0.035em;
+      font-size: 1.05rem;
+      line-height: 1.2;
+    }
+
+    .mini-card span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .hub-card {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, var(--teal-dark), var(--navy));
+      color: #fff;
+      border-radius: 28px;
+      padding: 26px;
+      min-height: 152px;
+      box-shadow: 0 20px 54px rgba(23, 37, 84, 0.22);
+    }
+
+    .hub-card .hub-label {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.75rem;
+      font-weight: 900;
+      color: rgba(255,255,255,0.68);
+    }
+
+    .hub-card strong {
+      display: block;
+      margin-top: 14px;
+      font-size: clamp(1.7rem, 3vw, 2.45rem);
+      letter-spacing: -0.06em;
+      line-height: 1.02;
+    }
+
+    .hub-card p {
+      margin: 12px 0 0;
+      color: rgba(255,255,255,0.76);
+      line-height: 1.55;
+      max-width: 660px;
+    }
+
+    .metric-row {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .visual-metric {
+      border-radius: 20px;
+      padding: 16px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .visual-metric strong {
+      display: block;
+      color: var(--teal-dark);
+      font-size: 1.45rem;
+      letter-spacing: -0.055em;
+    }
+
+    .visual-metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 5px;
+      line-height: 1.25;
+    }
+
+    section { margin-top: 34px; }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      letter-spacing: -0.065em;
+    }
+
+    .section-title p {
+      max-width: 780px;
+      margin: 14px auto 0;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 1.05rem;
+    }
+
+    .routes {
+      display: grid;
+      grid-template-columns: 1.1fr 0.95fr 0.95fr;
+      gap: 16px;
+    }
+
+    .route-card {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 28px;
+      min-height: 310px;
+      box-shadow: var(--shadow-soft);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .route-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(15,118,110,0.34);
+      box-shadow: var(--shadow);
+    }
+
+    .route-card.primary-route {
+      background: linear-gradient(180deg, #ffffff 0%, #f2faf8 100%);
+      border-color: rgba(15,118,110,0.24);
+    }
+
+    .route-kicker {
+      color: var(--teal);
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .route-logo {
+      display: block;
+      width: 168px;
+      max-width: 78%;
+      height: auto;
+      margin: 0 0 18px;
+    }
+
+    .route-card h3 {
+      margin: 16px 0 12px;
+      font-size: clamp(1.45rem, 2.4vw, 2.05rem);
+      line-height: 1.08;
+      letter-spacing: -0.055em;
+    }
+
+    .route-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .route-link {
+      margin-top: auto;
+      padding-top: 24px;
+      font-weight: 900;
+      color: var(--teal-dark);
+    }
+
+    .logic-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .logic-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: var(--shadow-soft);
+      min-height: 210px;
+    }
+
+    .logic-num {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--soft-teal);
+      color: var(--teal-dark);
+      border: 1px solid rgba(15,118,110,0.18);
+      font-weight: 920;
+      margin-bottom: 16px;
+    }
+
+    .logic-card h3 {
+      margin: 0 0 10px;
+      font-size: 1.12rem;
+      letter-spacing: -0.035em;
+      line-height: 1.2;
+    }
+
+    .logic-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.95rem;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .position-card {
+      background: linear-gradient(135deg, var(--navy-dark), var(--teal-dark));
+      color: #fff;
+      border-radius: 30px;
+      padding: 34px;
+      box-shadow: var(--shadow);
+    }
+
+    .position-card h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      letter-spacing: -0.065em;
+      line-height: 1.05;
+    }
+
+    .position-card p {
+      margin: 18px 0 0;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.65;
+    }
+
+    .position-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .position-tags span {
+      border: 1px solid rgba(255,255,255,0.22);
+      color: rgba(255,255,255,0.86);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 820;
+    }
+
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .proof-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow-soft);
+      min-height: 176px;
+    }
+
+    .proof-card strong {
+      display: block;
+      color: var(--teal-dark);
+      font-size: 1.55rem;
+      letter-spacing: -0.05em;
+      margin-bottom: 8px;
+    }
+
+    .proof-card span {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .cta {
+      background: linear-gradient(135deg, rgba(15,118,110,0.12), rgba(36,60,122,0.12));
+      border: 1px solid rgba(15,118,110,0.18);
+      border-radius: 32px;
+      padding: 38px;
+      text-align: center;
+    }
+
+    .cta h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      letter-spacing: -0.065em;
+      line-height: 1.05;
+    }
+
+    .cta p {
+      max-width: 760px;
+      margin: 14px auto 0;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 1.05rem;
+    }
+
+    .cta-actions { justify-content: center; }
+
+    footer {
+      margin-top: 32px;
+      border-top: 1px solid var(--line);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    footer a {
+      color: var(--teal-dark);
+      text-decoration: none;
+      font-weight: 820;
+    }
+
+
+    .lang-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 8px 22px rgba(15, 31, 29, 0.05);
+    }
+
+    .lang-switch a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .lang-switch a.active {
+      background: var(--teal);
+      color: #fff;
+    }
+
+    .lang-switch a:not(.active):hover {
+      color: var(--teal-dark);
+      background: var(--soft-teal);
+    }
+
+    @media (max-width: 1040px) {
+      .hero,
+      .split { grid-template-columns: 1fr; }
+      .routes { grid-template-columns: 1fr; }
+      .logic-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 700px) {
+      .page-shell {
+        width: min(100% - 28px, 1160px);
+        padding-top: 18px;
+      }
+
+      header.topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      nav { justify-content: flex-start; gap: 12px; }
+      nav a.nav-cta { padding: 9px 13px; }
+
+      .hero {
+        min-height: auto;
+        padding: 48px 0 34px;
+      }
+
+      .hero-visual { min-height: auto; padding: 20px; border-radius: 28px; }
+      .visual-grid,
+      .metric-row,
+      .logic-strip,
+      .proof-grid { grid-template-columns: 1fr; }
+      .hub-card { padding: 22px; }
+      .button { width: 100%; }
+      .route-card, .position-card, .cta { padding: 28px 22px; }
+      .brand-logo { width: 184px; max-width: 72vw; }
+      .tree-bg { right: -140px; bottom: -90px; width: 520px; opacity: 0.045; }
+      footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="https://metudtx.com" aria-label="METU DTX Geçit Ana Sayfası">
+        <img class="brand-logo" src="metu-dtx-logo.png" alt="METU DTX Dijital Dönüşüm ve İnovasyon Merkezi">
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="https://portal.metudtx.com">Platform</a>
+        <a href="https://ai4gtech.metudtx.com">AI4GTech</a>
+        <a href="https://dtx.metu.edu.tr">Ana Site</a>
+        <a href="mailto:info@metudtx.com">İletişim</a>
+        <span class="lang-switch" aria-label="Dil seçimi">
+          <a href="/" hreflang="en" lang="en">EN</a>
+          <a class="active" href="/tr/" hreflang="tr" lang="tr" aria-current="page">TR</a>
+        </span>
+        <a class="nav-cta" href="https://portal.metudtx.com">Değerlendirmeye Başla</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Orta Doğu Teknik Üniversitesi</div>
+        <h1>Sanayi İçin Dijital Dönüşüm Geçidi</h1>
+        <p class="lead">
+          METU DTX; firmaları dijital olgunluk değerlendirmesi, kanıta dayalı yol haritası, test-before-invest altyapısı, yapay zekâ ve yeşil dönüşüm hizmetleri ile uygulama desteğine bağlar.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="https://portal.metudtx.com">Dijital Olgunluk Değerlendirmesine Başla</a>
+          <a class="button secondary" href="https://ai4gtech.metudtx.com">AI4GTech Anatolia’yı İncele</a>
+          <a class="button ghost" href="https://dtx.metu.edu.tr">Kurumsal Siteyi Ziyaret Et</a>
+        </div>
+      </div>
+
+      <aside class="hero-visual" aria-label="METU DTX dönüşüm geçidi görseli">
+        <img class="tree-bg" src="metu-dtx-tree.png" alt="" aria-hidden="true">
+        <div class="visual-grid">
+          <div class="hub-card">
+            <div class="hub-label">Dönüşüm işletim katmanı</div>
+            <strong>Endüstriyel dönüşümü değerlendir, yol haritasına bağla, doğrula ve ölçekle.</strong>
+            <p>METU DTX platform hizmetleri, kurumsal yetkinlikleri ve AI4GTech Anatolia EDIH hizmetleri için tek giriş noktası.</p>
+          </div>
+          <div class="mini-card">
+            <strong>Dijital Platform</strong>
+            <span>Firma başvurusu, öz değerlendirme, uzman incelemesi, olgunluk raporu ve yol haritası çıktıları.</span>
+          </div>
+          <div class="mini-card">
+            <strong>AI4GTech Anatolia</strong>
+            <span>EDIH ekosistemi üzerinden yapay zekâ, yeşil dönüşüm ve ikiz dönüşüm hizmetleri.</span>
+          </div>
+          <div class="mini-card">
+            <strong>METU DTX Laboratuvarları</strong>
+            <span>Yapay zekâ, büyük veri, akıllı üretim, AR/VR, dijital ikiz ve doğrulama altyapısı.</span>
+          </div>
+          <div class="mini-card">
+            <strong>Proje Yolları</strong>
+            <span>Proje kartları, yatırım mantığı, pilot desteği, ekosistem erişimi ve takip.</span>
+          </div>
+        </div>
+
+        <div class="metric-row">
+          <div class="visual-metric">
+            <strong>80+</strong>
+            <span>saha uygulaması</span>
+          </div>
+          <div class="visual-metric">
+            <strong>100+</strong>
+            <span>değerlendirme ve yol haritası deneyimi</span>
+          </div>
+          <div class="visual-metric">
+            <strong>15+ yıl</strong>
+            <span>üniversite-sanayi iş birliği</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="routes">
+      <div class="section-title">
+        <h2>Doğru giriş noktasını seçin</h2>
+        <p>
+          Bu geçit sayfası operasyonel platformu, Avrupa Dijital İnovasyon Merkezi proje sayfasını ve ana kurumsal METU DTX sitesini ayrıştırır.
+        </p>
+      </div>
+
+      <div class="routes">
+        <a class="route-card primary-route" href="https://portal.metudtx.com">
+          <span class="route-kicker">Ana rota</span>
+          <h3>METU DTX Dijital Dönüşüm Platformu</h3>
+          <p>Firma kaydı, öz değerlendirme ve yapılandırılmış dijital olgunluk değerlendirme süreci buradan başlar. Firmalar için operasyonel giriş noktasıdır.</p>
+          <span class="route-link">Platform giriş sayfasını aç</span>
+        </a>
+
+        <a class="route-card" href="https://ai4gtech.metudtx.com">
+          <img class="route-logo" src="ai4gtech-logo.png" alt="AI4GTech Anatolia logo">
+          <span class="route-kicker">EDIH rotası</span>
+          <h3>AI4GTech Anatolia</h3>
+          <p>Test-before-invest, eğitim, finansmana erişim ve inovasyon ekosistemi desteğini içeren yapay zekâ, yeşil ve ikiz dönüşüm hizmetlerini inceleyin.</p>
+          <span class="route-link">AI4GTech’i incele</span>
+        </a>
+
+        <a class="route-card" href="https://dtx.metu.edu.tr">
+          <span class="route-kicker">Kurumsal rota</span>
+          <h3>METU DTX Ana Sitesi</h3>
+          <p>Merkez, laboratuvarlar, metodoloji, duyurular, kurumsal bilgiler ve iletişim detayları için ana kurumsal siteye erişin.</p>
+          <span class="route-link">Ana siteyi ziyaret et</span>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <h2>Değerlendirmeden uygulamaya</h2>
+        <p>
+          METU DTX dijital dönüşümü bağımsız bir BT çalışması olarak konumlandırmaz. İşletim mantığı olgunluk değerlendirmesini iş sonuçlarına, yol haritalarına, proje önerilerine ve uygulama geçitlerine bağlar.
+        </p>
+      </div>
+
+      <div class="logic-strip">
+        <div class="logic-card">
+          <div class="logic-num">1</div>
+          <h3>Değerlendir</h3>
+          <p>Platform ve uzman liderliğindeki değerlendirme süreciyle firma profilini, başlangıç bilgilerini ve olgunluk kanıtlarını topla.</p>
+        </div>
+        <div class="logic-card">
+          <div class="logic-num">2</div>
+          <h3>Yol Haritası</h3>
+          <p>Bulguları stratejik dönüşüm alanlarına, sıralama mantığına ve fazlandırılmış dijital dönüşüm yol haritasına çevir.</p>
+        </div>
+        <div class="logic-card">
+          <div class="logic-num">3</div>
+          <h3>Projelendir</h3>
+          <p>Yol haritası önceliklerini kapsam, beklenen fayda, bağımlılık, zamanlama ve uygulama varsayımları içeren proje kartlarına dönüştür.</p>
+        </div>
+        <div class="logic-card">
+          <div class="logic-num">4</div>
+          <h3>Doğrula ve ölçekle</h3>
+          <p>Tam ölçekli uygulama öncesinde test-before-invest, pilot doğrulama, laboratuvar altyapısı, çözüm sağlayıcı eşleştirme ve ekosistem erişimini kullan.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="split">
+      <div class="position-card">
+        <h2>Bağımsız, kanıta dayalı ve uygulama odaklı.</h2>
+        <p>
+          METU DTX’in değeri yalnızca teşhisle sınırlı değildir. Merkez; değerlendirme, yol haritası, proje hazırlığı, teknik doğrulama, eğitim, ekosistem bağlantısı ve uygulama desteği boyunca çalışır.
+        </p>
+        <div class="position-tags">
+          <span>Tedarikçi bağımsız</span>
+          <span>Kanıta dayalı</span>
+          <span>İş sonucu odaklı</span>
+          <span>Dijital + yeşil + yapay zekâ hazırlığı</span>
+        </div>
+      </div>
+
+      <div class="proof-grid" aria-label="METU DTX yetkinlik göstergeleri">
+        <div class="proof-card">
+          <strong>7 eksen</strong>
+          <span>Stratejik dijital dönüşüm boyutlarını kapsayan yapılandırılmış olgunluk modeli.</span>
+        </div>
+        <div class="proof-card">
+          <strong>45 kategori</strong>
+          <span>Operasyon ve organizasyon genelinde olgunluğu yorumlamak için detaylı analitik yapı.</span>
+        </div>
+        <div class="proof-card">
+          <strong>84 soru</strong>
+          <span>Kanıta dayalı skorlama ve uzman yorumunu destekleyen kritik sorular.</span>
+        </div>
+        <div class="proof-card">
+          <strong>1-5 ölçeği</strong>
+          <span>Mevcut durum, iyileştirme alanları ve dönüşüm önceliklerini bağlayan olgunluk ölçeği.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <h2>Platformdan başlayın.</h2>
+      <p>
+        Firmalar METU DTX Dijital Dönüşüm Platformu üzerinden başlamalıdır. Değerlendirme çıktıları buradan yol haritası hazırlığına, test-before-invest hizmetlerine, AI4GTech Anatolia hizmetlerine ve uygulama yollarına bağlanabilir.
+      </p>
+      <div class="cta-actions">
+        <a class="button primary" href="https://portal.metudtx.com">Platforma Git</a>
+        <a class="button secondary" href="mailto:info@metudtx.com">METU DTX ile İletişime Geç</a>
+      </div>
+    </section>
+
+    <footer>
+      <div>
+        <strong>METU DTX</strong><br>
+        Orta Doğu Teknik Üniversitesi Dijital Dönüşüm ve İnovasyon Merkezi<br>
+        Ankara, Türkiye
+      </div>
+      <div>
+        <a href="mailto:info@metudtx.com">info@metudtx.com</a><br>
+        <a href="https://dtx.metu.edu.tr">dtx.metu.edu.tr</a><br>
+        <a href="https://portal.metudtx.com">portal.metudtx.com</a>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

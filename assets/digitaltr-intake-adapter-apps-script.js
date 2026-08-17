@@ -127,7 +127,7 @@
 
     handleReady(event, envelope) {
       if (this.bridgeWindow || !this.started || !isTrustedBridgeOrigin(event.origin) ||
-          !isDescendantWindow(event.source, this.iframe.contentWindow) ||
+          envelope.sessionNonce !== this.sessionNonce ||
           !hasExactKeys(envelope.payload, ["environment", "ok", "schemaVersion"]) ||
           envelope.payload.ok !== true || envelope.payload.environment !== "TEST" ||
           envelope.payload.schemaVersion !== SCHEMA_VERSION) return;
@@ -182,9 +182,11 @@
       document.body.appendChild(iframe);
 
       const client = new DigitalTRBridgeClient(iframe);
+      const bridgeUrl = new URL(config.bridgeUrl);
+      bridgeUrl.searchParams.set("sessionNonce", client.sessionNonce);
       const bridgeReady = client.start();
       const recaptchaReady = loadRecaptcha(config.siteKey);
-      iframe.src = config.bridgeUrl;
+      iframe.src = bridgeUrl.href;
       try {
         await Promise.all([bridgeReady, recaptchaReady]);
       } catch (error) {
@@ -333,23 +335,6 @@
     } catch (_error) {
       return false;
     }
-  }
-
-  function isDescendantWindow(source, expectedRoot) {
-    try {
-      const queue = [expectedRoot];
-      for (let depth = 0; depth < 4 && queue.length; depth += 1) {
-        const count = queue.length;
-        for (let index = 0; index < count; index += 1) {
-          const current = queue.shift();
-          if (current === source) return true;
-          for (let frameIndex = 0; frameIndex < current.frames.length; frameIndex += 1) {
-            queue.push(current.frames[frameIndex]);
-          }
-        }
-      }
-    } catch (_error) {}
-    return false;
   }
 
   function cloneJson(value) {

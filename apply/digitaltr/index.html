@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DIGITALTR Application | METU DTX</title>
-  <meta name="description" content="Explore DIGITALTR's free digital maturity, advisory, testing and joint technology development services and apply through METU DTX.">
+  <meta name="description" content="Explore DIGITALTR digital maturity, consulting, testing and joint technology development services, then apply through METU DTX.">
   <link rel="canonical" href="https://metudtx.com/apply/digitaltr/">
   <link rel="alternate" hreflang="en" href="https://metudtx.com/apply/digitaltr/">
   <link rel="alternate" hreflang="tr" href="https://metudtx.com/tr/basvur/digitaltr/">
@@ -21,9 +21,9 @@
   <link rel="stylesheet" href="/assets/digitaltr-page.css">
   <link rel="stylesheet" href="/assets/digitaltr-form-theme.css">
   <script defer src="/assets/digitaltr-config.js"></script>
-  <script defer src="/assets/digitaltr-poc-client.js"></script>
-  <script defer src="/assets/digitaltr-poc-copy.js"></script>
-  <script defer src="/assets/digitaltr-page.js?v=0.7.0"></script>
+  <script defer src="/assets/digitaltr-intake-schema.js?v=0.8.0"></script>
+  <script defer src="/assets/digitaltr-intake-adapter-memory.js?v=0.8.0"></script>
+  <script defer src="/assets/digitaltr-page.js?v=0.8.0"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -73,7 +73,6 @@
           <a class="active" href="/apply/digitaltr/" hreflang="en" lang="en" aria-current="page">EN</a>
           <a href="/tr/basvur/digitaltr/" hreflang="tr" lang="tr">TR</a>
         </span>
-        <span data-digitaltr-primary-cta data-placement="nav"></span>
       </nav>
     </header>
 
@@ -83,12 +82,11 @@
           <div class="eyebrow">DIGITALTR OPEN CALL</div>
           <h1 id="page-title">Apply for the right service for your digital transformation</h1>
           <p class="lead">
-            Apply through METU DTX for free DIGITALTR services in digital maturity, advisory support, testing and joint technology development.
+            Apply through METU DTX for DIGITALTR digital maturity, consulting, testing and joint technology development services offered at no charge or at discounted rates according to your company’s scale and the scope of your needs.
           </p>
           <div class="window-label" data-window-label>Loading application window information</div>
           <div class="hero-actions">
             <span data-digitaltr-primary-cta></span>
-            <a class="button secondary" data-official-call-link hidden>View the Official Call Document</a>
           </div>
         </div>
 
@@ -123,8 +121,8 @@
               <span>service modules</span>
             </div>
             <div class="visual-metric">
-              <strong>Free</strong>
-              <span>technical support</span>
+              <strong>Flexible</strong>
+              <span>support terms</span>
             </div>
             <div class="visual-metric">
               <strong>Türkiye</strong>
@@ -144,11 +142,14 @@
             DIGITALTR is the Technical Assistance for Support for the Digital Transformation of the Manufacturing Industry. Co-financed by the European Union and the Republic of Türkiye, the project aims to increase the adoption of digital technologies and strengthen the competitiveness and digital transformation capacity of manufacturing industry.
           </p>
           <p>
-            The four services under the programme are provided at no charge to applicants. Applications are assessed against eligibility, technical merit, available service capacity and portfolio balance. Submitting an application does not create an automatic entitlement to the requested services.
+            Services under the programme may be offered at no charge or at discounted rates according to the applicant’s scale and the scope of the requested work. Applicable terms are confirmed after technical assessment. Applications are also assessed against eligibility, available service capacity and portfolio balance; submitting an application does not create an automatic entitlement to the requested services.
           </p>
           <p>
-            METU DTX can support companies throughout Türkiye, with a primary focus on the automotive and machinery sectors while retaining the capacity to serve other manufacturing fields. Depending on the service, activities may be delivered on site, remotely or through METU DTX facilities.
+            METU DTX serves companies throughout Türkiye, primarily in the automotive and machinery sectors as well as across other manufacturing fields. It delivers activities on site, remotely or through METU DTX facilities according to the nature of each service.
           </p>
+          <div class="inline-callout">
+            <strong>Assessment recognised for investment incentives:</strong> The METU-DTX Digital Maturity Assessment is a recognised assessment model used in digital transformation investment-incentive processes under the Republic of Türkiye Ministry of Industry and Technology Digital Transformation Support Programme.
+          </div>
           <div class="inline-callout" data-window-label>Loading application window information</div>
         </div>
       </section>
@@ -203,7 +204,7 @@
           </article>
         </div>
         <div class="inline-callout">
-          If your company has completed a valid digital maturity assessment within the last year using DMA, SIRI or a DDX/METU DTX approach, you may provide its details and apply directly for advanced services. The application remains subject to eligibility and technical assessment.
+          <strong>If your company has completed a valid digital maturity assessment within the last year using METU-DTX, TÜBİTAK TÜSSİDE DDX/DDX+ or SIRI,</strong> you may provide its details and apply directly for advanced services. The application remains subject to eligibility and technical assessment.
         </div>
       </section>
 
@@ -231,81 +232,19 @@
         </div>
       </section>
 
-      <section aria-labelledby="preparation-title">
-        <div class="section-title">
-          <h2 id="preparation-title">Prepare before applying</h2>
-          <p>Clarify your core company information and transformation needs in advance.</p>
-        </div>
-        <div class="preparation-grid">
-          <div class="preparation-card">
-            <h3>Company information</h3>
-            <ul class="check-list">
-              <li>Legal name, trade registry information and field of activity</li>
-              <li>Contact person and company contact details</li>
-              <li>Workforce size, revenue and core company profile</li>
-            </ul>
-          </div>
-          <div class="preparation-card">
-            <h3>Needs information</h3>
-            <ul class="check-list">
-              <li>The business or production problem you want to address</li>
-              <li>Your digital transformation objectives and expected impact</li>
-              <li>Details of any digital maturity work completed within the last year</li>
-              <li>The current situation and expectations for the requested service</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
       <section id="digitaltr-application" data-digitaltr-application-section aria-labelledby="application-title">
         <div class="section-title">
-          <h2 id="application-title">DIGITALTR application</h2>
-          <p>Start your application online here.</p>
+          <h2 id="application-title">DIGITALTR application form</h2>
+          <p>Select one or more services and complete your application in a single form.</p>
         </div>
-        <div class="application-shell" data-digitaltr-application-container>
-          <div class="application-notice application-notice--prelaunch">
-            <h3>Application form is being prepared</h3>
-            <p>Applications will open soon.</p>
-          </div>
-        </div>
-      </section>
-
-      <section aria-labelledby="role-title">
-        <div class="section-title">
-          <h2 id="role-title">Application support from METU DTX</h2>
-          <p>We help you select the right service and prepare a strong application.</p>
-        </div>
-        <div class="role-grid">
-          <div class="position-card">
-            <h2>From your need to the right service</h2>
-            <p>METU DTX helps clarify your needs, identify suitable services and prepare your application for the DIGITALTR process.</p>
-            <div class="position-tags">
-              <span>Needs analysis</span>
-              <span>Service selection</span>
-              <span>Application preparation</span>
-              <span>Technical guidance</span>
-            </div>
-          </div>
-          <div class="role-details">
-            <ul class="check-list">
-              <li>Matches your needs to the four DIGITALTR services.</li>
-              <li>Helps you prepare a clear and complete application.</li>
-              <li>Provides clarification and revision support where needed.</li>
-              <li>Supports the routing of your application into the official DIGITALTR process.</li>
-            </ul>
-            <div class="authority-note">
-              Final eligibility and service allocation depend on the DIGITALTR assessment, technical fit and available capacity.
-            </div>
-          </div>
-        </div>
+        <div class="application-shell" data-digitaltr-application-container></div>
       </section>
 
       <section class="cta" aria-labelledby="contact-title">
         <h2 id="contact-title">Contact us about the DIGITALTR application</h2>
-        <p>Send questions about eligibility, service selection or application preparation to the METU DTX team.</p>
+        <p>Send questions about eligibility or service selection to the METU DTX team.</p>
         <div class="cta-actions">
           <span data-contact-link data-contact-class="button primary"></span>
-          <a class="button secondary" data-official-call-link hidden>View the Official Call Document</a>
         </div>
       </section>
 

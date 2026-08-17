@@ -35,6 +35,7 @@
       lengthError: "Bu alandaki metin izin verilen uzunlukta olmalıdır.",
       wordError: "Bu alan {count} kelimeyi aşmamalıdır.",
       inHouseError: "En az bir oran girin veya şirket içinde geliştirme olmadığını belirtin.",
+      backendFieldError: "Bu alan backend doğrulamasından geçmedi.",
       genericError: "Başvuru gönderilemedi. Lütfen yeniden deneyin.",
       successTitle: "Başvurunuz alındı",
       successBody: "Başvurunuz başarıyla alınmıştır.",
@@ -69,6 +70,7 @@
       lengthError: "The text in this field must be within the permitted length.",
       wordError: "This field must not exceed {count} words.",
       inHouseError: "Enter at least one percentage or state that there is no in-house development.",
+      backendFieldError: "This field did not pass backend validation.",
       genericError: "The application could not be submitted. Please try again.",
       successTitle: "Application received",
       successBody: "Your application has been received successfully.",
@@ -769,6 +771,53 @@
     }
   }
 
+  function backendValidationErrors(view, error) {
+    if (!error || !Array.isArray(error.fieldErrors)) {
+      return [];
+    }
+    const errors = [];
+    error.fieldErrors.forEach(function (fieldError) {
+      if (!fieldError || typeof fieldError.fieldKey !== "string") {
+        return;
+      }
+      let reference = null;
+      const partnerMatch = /^partners\[(\d+)\]\.([A-Z0-9_]+)$/.exec(fieldError.fieldKey);
+      if (partnerMatch) {
+        const partner = view.partners[Number(partnerMatch[1])];
+        reference = partner && partner.refs.get(partnerMatch[2]);
+      } else {
+        const fieldKey = fieldError.fieldKey === "selectedServices"
+          ? "APPLICANT_SELECTED_SERVICES"
+          : fieldError.fieldKey;
+        reference = view.refs.get(fieldKey);
+      }
+      if (!reference || reference.wrapper.hidden) {
+        return;
+      }
+      let message = ui.backendFieldError;
+      if (fieldError.code === "REQUIRED" || fieldError.code === "MUST_BE_TRUE") {
+        message = ui.requiredError;
+      } else if (fieldError.code === "INVALID_EMAIL") {
+        message = ui.emailError;
+      } else if (fieldError.code === "INVALID_URL") {
+        message = ui.urlError;
+      } else if (fieldError.code === "INVALID_PHONE") {
+        message = ui.phoneError;
+      } else if (/NUMBER|STEP|MONTH/.test(fieldError.code || "")) {
+        message = ui.numberError;
+      } else if (/SELECTION|ENUM|ARRAY/.test(fieldError.code || "")) {
+        message = ui.selectionError;
+      } else if (/IN_HOUSE/.test(fieldError.code || "")) {
+        message = ui.inHouseError;
+      } else if (/STRING|WORDS/.test(fieldError.code || "")) {
+        message = ui.lengthError;
+      }
+      setError(reference, message);
+      errors.push({ reference: reference, message: message });
+    });
+    return errors;
+  }
+
   function coerceValue(field, value) {
     if (field.backendType === "integer") {
       return Number.parseInt(value, 10);
@@ -935,6 +984,11 @@
         submit.disabled = false;
         submit.textContent = ui.submit;
         form.removeAttribute("aria-busy");
+        const backendErrors = backendValidationErrors(view, _error);
+        if (backendErrors.length > 0) {
+          showErrorSummary(view, backendErrors);
+          backendErrors[0].reference.focusTarget.focus();
+        }
         live.textContent = ui.genericError;
       }
     });

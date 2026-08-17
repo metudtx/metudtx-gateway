@@ -289,14 +289,6 @@ a.button.primary:hover {
   color: var(--teal-dark);
 }
 
-.button.primary.button--inactive {
-  border-color: var(--line);
-  background: rgba(255, 255, 255, 0.76);
-  color: var(--muted);
-  cursor: default;
-  user-select: none;
-}
-
 .hero-visual {
   position: relative;
   min-height: 500px;
@@ -664,49 +656,9 @@ main > section {
 
 .application-shell {
   min-height: 260px;
-  padding: 28px;
+  padding: 0;
   border-radius: 30px;
-}
-
-.application-notice {
-  padding: 28px;
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  background: var(--panel);
-}
-
-.application-notice p {
-  max-width: 760px;
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.6;
-}
-
-.application-notice--prelaunch {
-  border-color: rgba(36, 60, 122, 0.2);
-  background: var(--soft-blue);
-}
-
-.application-notice--closed {
-  background: var(--warning);
-}
-
-.application-notice--error {
-  border-color: rgba(166, 52, 42, 0.22);
-  background: var(--soft-danger);
-}
-
-.application-notice--error h3 {
-  color: var(--danger);
-}
-
-.application-notice--language {
-  border-color: rgba(15, 118, 110, 0.2);
-  background: var(--soft-teal);
-}
-
-.application-notice[hidden] {
-  display: none;
+  overflow: hidden;
 }
 
 .position-card {
@@ -904,7 +856,6 @@ footer a {
   .document-note,
   .position-card,
   .role-details,
-  .application-shell,
   .cta,
   .funding-panel {
     padding: 26px 20px;

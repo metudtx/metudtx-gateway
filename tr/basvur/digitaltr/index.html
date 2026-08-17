@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DigitalTR Başvurusu | METU DTX</title>
-  <meta name="description" content="DIGITALTR'ın ücretsiz dijital olgunluk, danışmanlık, test ve ortak teknoloji geliştirme hizmetlerini inceleyin ve METU DTX üzerinden başvurun.">
+  <meta name="description" content="DIGITALTR dijital olgunluk, danışmanlık, test ve ortak teknoloji geliştirme hizmetlerini inceleyin; METU DTX üzerinden başvurun.">
   <link rel="canonical" href="https://metudtx.com/tr/basvur/digitaltr/">
   <link rel="alternate" hreflang="tr" href="https://metudtx.com/tr/basvur/digitaltr/">
   <link rel="alternate" hreflang="en" href="https://metudtx.com/apply/digitaltr/">
@@ -21,9 +21,9 @@
   <link rel="stylesheet" href="/assets/digitaltr-page.css">
   <link rel="stylesheet" href="/assets/digitaltr-form-theme.css">
   <script defer src="/assets/digitaltr-config.js"></script>
-  <script defer src="/assets/digitaltr-poc-client.js"></script>
-  <script defer src="/assets/digitaltr-poc-copy.js"></script>
-  <script defer src="/assets/digitaltr-page.js?v=0.7.0"></script>
+  <script defer src="/assets/digitaltr-intake-schema.js?v=0.8.0"></script>
+  <script defer src="/assets/digitaltr-intake-adapter-memory.js?v=0.8.0"></script>
+  <script defer src="/assets/digitaltr-page.js?v=0.8.0"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -73,7 +73,6 @@
           <a href="/apply/digitaltr/" hreflang="en" lang="en">EN</a>
           <a class="active" href="/tr/basvur/digitaltr/" hreflang="tr" lang="tr" aria-current="page">TR</a>
         </span>
-        <span data-digitaltr-primary-cta data-placement="nav"></span>
       </nav>
     </header>
 
@@ -83,12 +82,11 @@
           <div class="eyebrow">DIGITALTR AÇIK ÇAĞRISI</div>
           <h1 id="page-title">Dijital dönüşümünüz için doğru hizmete başvurun</h1>
           <p class="lead">
-            DIGITALTR kapsamında sunulan ücretsiz dijital olgunluk, danışmanlık, test ve ortak teknoloji geliştirme hizmetlerinden yararlanmak için METU DTX üzerinden başvurun.
+            DIGITALTR kapsamındaki dijital olgunluk, danışmanlık, test ve ortak teknoloji geliştirme hizmetlerine işletmenizin ölçeği ve ihtiyacınızın kapsamına göre ücretsiz veya indirimli koşullarla erişmek için METU DTX üzerinden başvurun.
           </p>
           <div class="window-label" data-window-label>Başvuru dönemi bilgisi yükleniyor</div>
           <div class="hero-actions">
             <span data-digitaltr-primary-cta></span>
-            <a class="button secondary" data-official-call-link hidden>Resmî Başvuru Dokümanını İncele</a>
           </div>
         </div>
 
@@ -123,8 +121,8 @@
               <span>hizmet modülü</span>
             </div>
             <div class="visual-metric">
-              <strong>Ücretsiz</strong>
-              <span>teknik destek</span>
+              <strong>Esnek</strong>
+              <span>destek koşulları</span>
             </div>
             <div class="visual-metric">
               <strong>Türkiye</strong>
@@ -144,11 +142,14 @@
             DIGITALTR, İmalat Sanayinin Dijital Dönüşümüne Destek Teknik Destek Projesidir. Avrupa Birliği ve Türkiye Cumhuriyeti tarafından ortak finanse edilen proje; imalat sanayinde dijital teknolojilerin kullanımını, işletmelerin rekabet gücünü ve dijital dönüşüm kapasitesini geliştirmeyi amaçlamaktadır.
           </p>
           <p>
-            Program kapsamındaki dört hizmet başvuru sahiplerine ücretsiz sunulur. Başvurular uygunluk, teknik değerlendirme, hizmet kapasitesi ve portföy dengesi dikkate alınarak değerlendirilir. Başvuru yapılması talep edilen hizmetlere doğrudan erişim hakkı oluşturmaz.
+            Program kapsamındaki hizmetler, başvuru sahibinin ölçeği ve talep edilen çalışmanın kapsamına göre ücretsiz veya indirimli fiyatlarla sunulabilir. Uygulanacak koşullar teknik değerlendirme sonrasında netleştirilir. Başvurular uygunluk, hizmet kapasitesi ve portföy dengesi dikkate alınarak değerlendirilir; başvuru yapılması talep edilen hizmetlere doğrudan erişim hakkı oluşturmaz.
           </p>
           <p>
-            METU DTX, başta otomotiv ve makine sektörleri olmak üzere farklı imalat sektörlerine Türkiye genelinde hizmet verebilir. Faaliyetler hizmetin niteliğine göre yerinde, uzaktan veya METU DTX altyapılarında yürütülebilir.
+            METU DTX, başta otomotiv ve makine sektörleri olmak üzere farklı imalat sektörlerine Türkiye genelinde hizmet vermektedir. Faaliyetleri hizmetin niteliğine göre yerinde, uzaktan veya METU DTX altyapılarında yürütmektedir.
           </p>
+          <div class="inline-callout">
+            <strong>Yatırım teşviklerinde geçerli değerlendirme:</strong> METU-DTX Dijital Olgunluk Değerlendirmesi, T.C. Sanayi ve Teknoloji Bakanlığı Dijital Dönüşüm Destek Programı kapsamındaki dijital dönüşüm yatırım teşviki süreçlerinde geçerli bir değerlendirme modeli olarak kullanılmaktadır.
+          </div>
           <div class="inline-callout" data-window-label>Başvuru dönemi bilgisi yükleniyor</div>
         </div>
       </section>
@@ -203,7 +204,7 @@
           </article>
         </div>
         <div class="inline-callout">
-          Son bir yıl içinde DMA, SIRI veya DDX/METU DTX yaklaşımıyla geçerli bir dijital olgunluk analizi yaptırdıysanız, analiz bilgilerini belirterek ileri hizmetlere doğrudan başvurabilirsiniz. Başvuru yine uygunluk ve teknik değerlendirmeye tabidir.
+          <strong>Son bir yıl içinde METU-DTX, TÜBİTAK TÜSSİDE DDX/DDX+ veya SIRI ile geçerli bir dijital olgunluk analizi yaptırdıysanız,</strong> analiz bilgilerini belirterek ileri hizmetlere doğrudan başvurabilirsiniz. Başvuru uygunluk ve teknik değerlendirmeye tabidir.
         </div>
       </section>
 
@@ -231,81 +232,19 @@
         </div>
       </section>
 
-      <section aria-labelledby="preparation-title">
-        <div class="section-title">
-          <h2 id="preparation-title">Başvuru öncesinde hazırlayın</h2>
-          <p>Temel şirket bilgilerinizi ve dönüşüm ihtiyacınızı önceden netleştirin.</p>
-        </div>
-        <div class="preparation-grid">
-          <div class="preparation-card">
-            <h3>Şirket bilgileri</h3>
-            <ul class="check-list">
-              <li>Yasal unvan, ticaret sicil bilgisi ve faaliyet alanı</li>
-              <li>İletişim kişisi ve şirket iletişim bilgileri</li>
-              <li>Çalışan sayısı, gelir ve temel şirket profili</li>
-            </ul>
-          </div>
-          <div class="preparation-card">
-            <h3>İhtiyaç bilgileri</h3>
-            <ul class="check-list">
-              <li>Çözmek istediğiniz iş veya üretim problemi</li>
-              <li>Dijital dönüşüm hedefleriniz ve beklenen etki</li>
-              <li>Varsa son bir yılda tamamlanan dijital olgunluk çalışmasının bilgileri</li>
-              <li>Talep edilen hizmete ilişkin mevcut durum ve beklentiler</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
       <section id="digitaltr-application" data-digitaltr-application-section aria-labelledby="application-title">
         <div class="section-title">
-          <h2 id="application-title">DIGITALTR başvurusu</h2>
-          <p>Başvurunuzu çevrim içi olarak buradan başlatın.</p>
+          <h2 id="application-title">DIGITALTR başvuru formu</h2>
+          <p>Bir veya birden fazla hizmet seçerek tek form üzerinden başvurunuzu tamamlayın.</p>
         </div>
-        <div class="application-shell" data-digitaltr-application-container>
-          <div class="application-notice application-notice--prelaunch">
-            <h3>Başvuru formu hazırlanıyor</h3>
-            <p>Başvurular yakında açılacaktır.</p>
-          </div>
-        </div>
-      </section>
-
-      <section aria-labelledby="role-title">
-        <div class="section-title">
-          <h2 id="role-title">METU DTX ile başvuru desteği</h2>
-          <p>Doğru hizmeti seçmeniz ve güçlü bir başvuru hazırlamanız için yanınızdayız.</p>
-        </div>
-        <div class="role-grid">
-          <div class="position-card">
-            <h2>İhtiyacınızdan uygun hizmete</h2>
-            <p>METU DTX, ihtiyaçlarınızı netleştirir, uygun hizmetleri belirlemenize yardımcı olur ve başvurunuzun DIGITALTR sürecine hazırlanmasını destekler.</p>
-            <div class="position-tags">
-              <span>İhtiyaç analizi</span>
-              <span>Hizmet seçimi</span>
-              <span>Başvuru hazırlığı</span>
-              <span>Teknik yönlendirme</span>
-            </div>
-          </div>
-          <div class="role-details">
-            <ul class="check-list">
-              <li>İhtiyacınızı dört DIGITALTR hizmetiyle eşleştirir.</li>
-              <li>Başvurunuzun açık ve eksiksiz hazırlanmasına yardımcı olur.</li>
-              <li>Gerektiğinde açıklama ve düzeltme desteği sağlar.</li>
-              <li>Başvurunuzun resmî DIGITALTR sürecine yönlendirilmesini destekler.</li>
-            </ul>
-            <div class="authority-note">
-              Nihai uygunluk ve hizmet tahsisi DIGITALTR değerlendirmesi, teknik uygunluk ve mevcut kapasiteye göre belirlenir.
-            </div>
-          </div>
-        </div>
+        <div class="application-shell" data-digitaltr-application-container></div>
       </section>
 
       <section class="cta" aria-labelledby="contact-title">
         <h2 id="contact-title">DigitalTR başvurusu hakkında iletişime geçin</h2>
-        <p>Uygunluk, hizmet seçimi veya başvuru hazırlığıyla ilgili sorularınızı METU DTX ekibine iletebilirsiniz.</p>
+        <p>Uygunluk veya hizmet seçimiyle ilgili sorularınızı METU DTX ekibine iletebilirsiniz.</p>
         <div class="cta-actions">
           <span data-contact-link data-contact-class="button primary"></span>
-          <a class="button secondary" data-official-call-link hidden>Resmî Başvuru Dokümanını İncele</a>
         </div>
       </section>
 

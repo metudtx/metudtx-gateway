@@ -2,99 +2,115 @@
   "use strict";
 
   const config = window.METUDTX_CONFIG && window.METUDTX_CONFIG.digitaltr;
-  const pageLanguage = document.documentElement.lang === "tr" ? "tr" : "en";
-  const POC_QUERY = "?poc=1";
-  const RECAPTCHA_ACTION = "digitaltr_poc_submit";
-  const SUBMISSION_STORAGE_KEY = "metudtx.digitaltr.poc.submissionId.v0.2";
-  const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const schema = window.DIGITALTR_INTAKE_SCHEMA;
+  const adapter = window.DigitalTRIntakeSubmissionAdapter;
+  const language = document.documentElement.lang === "tr" ? "tr" : "en";
+  const locale = language === "tr" ? "tr-TR" : "en-GB";
 
-  const copy = {
+  const ui = {
     tr: {
-      prelaunch: "Başvuru formu hazırlanıyor",
       open: "Başvuruya Başla",
-      closed: "Başvuru dönemi sona erdi",
       windowPrefix: "İlk başvuru dönemi",
-      prelaunchBody: "Başvurular yakında açılacaktır.",
-      closedBody: "Bu dönem için yeni başvuru alınmamaktadır. Sonraki dönem hakkında bilgi almak için bizimle iletişime geçebilirsiniz.",
       emailSubject: "DigitalTR başvurusu hakkında",
-      contact: "DigitalTR başvurusu hakkında iletişime geçin"
+      contact: "DigitalTR başvurusu hakkında iletişime geçin",
+      formTitle: "DIGITALTR başvuru formu",
+      formIntro: "Şirket ve iletişim bilgilerinizi bir kez girin; bir veya birden fazla hizmet seçerek yalnız ilgili bölümleri tamamlayın.",
+      requiredNote: "* işaretli alanlar zorunludur.",
+      required: "Zorunlu",
+      selectPrompt: "Seçin",
+      sectionNav: "Başvuru bölümleri",
+      addPartner: "Proje ortağı ekle",
+      removePartner: "Ortağı kaldır",
+      partnerTitle: "Ek proje ortağı",
+      submit: "Başvuruyu Gönder",
+      submitting: "Başvurunuz gönderiliyor.",
+      validationTitle: "Başvuruyu göndermeden önce aşağıdaki alanları düzeltin:",
+      requiredError: "Bu alan zorunludur.",
+      selectionError: "En az bir seçenek belirleyin.",
+      serviceError: "En az bir hizmet seçin.",
+      emailError: "Geçerli bir e-posta adresi girin.",
+      urlError: "Geçerli bir web adresi girin.",
+      phoneError: "Geçerli bir telefon numarası girin.",
+      numberError: "İzin verilen aralıkta bir sayı girin.",
+      lengthError: "Bu alandaki metin izin verilen uzunlukta olmalıdır.",
+      wordError: "Bu alan {count} kelimeyi aşmamalıdır.",
+      inHouseError: "En az bir oran girin veya şirket içinde geliştirme olmadığını belirtin.",
+      genericError: "Başvuru gönderilemedi. Lütfen yeniden deneyin.",
+      successTitle: "Başvurunuz alındı",
+      successBody: "Başvurunuz başarıyla alınmıştır.",
+      appId: "APP ID",
+      selectedServices: "Seçilen hizmetler",
+      receivedAt: "Kayıt zamanı"
     },
     en: {
-      prelaunch: "Application form is being prepared",
       open: "Start Application",
-      closed: "The application window has closed",
       windowPrefix: "First application window",
-      prelaunchBody: "Applications will open soon.",
-      closedBody: "New applications are not being accepted for this window. Contact us for information about the next window.",
       emailSubject: "Question about the DIGITALTR application",
-      contact: "Contact us about the DIGITALTR application"
+      contact: "Contact us about the DIGITALTR application",
+      formTitle: "DIGITALTR application form",
+      formIntro: "Enter your company and contact details once, then select one or more services and complete only the relevant sections.",
+      requiredNote: "Fields marked * are required.",
+      required: "Required",
+      selectPrompt: "Select",
+      sectionNav: "Application sections",
+      addPartner: "Add project partner",
+      removePartner: "Remove partner",
+      partnerTitle: "Additional project partner",
+      submit: "Submit Application",
+      submitting: "Your application is being submitted.",
+      validationTitle: "Correct the following fields before submitting the application:",
+      requiredError: "This field is required.",
+      selectionError: "Select at least one option.",
+      serviceError: "Select at least one service.",
+      emailError: "Enter a valid email address.",
+      urlError: "Enter a valid web address.",
+      phoneError: "Enter a valid phone number.",
+      numberError: "Enter a number within the permitted range.",
+      lengthError: "The text in this field must be within the permitted length.",
+      wordError: "This field must not exceed {count} words.",
+      inHouseError: "Enter at least one percentage or state that there is no in-house development.",
+      genericError: "The application could not be submitted. Please try again.",
+      successTitle: "Application received",
+      successBody: "Your application has been received successfully.",
+      appId: "APP ID",
+      selectedServices: "Selected services",
+      receivedAt: "Recorded at"
     }
-  };
+  }[language];
 
-  const pocCopy = window.DIGITALTR_POC_COPY;
-
-  const services = [
-    {
-      code: "DTR-S1-DMA",
-      tr: "Dijital Olgunluk Değerlendirmesi",
-      en: "Digital Maturity Assessment"
-    },
-    {
-      code: "DTR-S2-DTC",
-      tr: "Dijital Dönüşüm Danışmanlığı",
-      en: "Digital Transformation Consulting"
-    },
-    {
-      code: "DTR-S3-TV",
-      tr: "Dijital Sistem ve Teknolojilerin Test ve Doğrulanması",
-      en: "Testing and Validation of Digital Systems and Technologies"
-    },
-    {
-      code: "DTR-S4-JTD",
-      tr: "Ortak Teknoloji Çözümü Geliştirme",
-      en: "Joint Technology Solution Development"
+  function element(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) {
+      node.className = className;
     }
-  ];
-
-  function applyTestRobotsPolicy() {
-    if (window.location.search !== POC_QUERY) {
-      return;
+    if (typeof text === "string") {
+      node.textContent = text;
     }
-
-    let robots = document.head.querySelector('meta[name="robots"]');
-    if (!robots) {
-      robots = document.createElement("meta");
-      robots.name = "robots";
-      document.head.appendChild(robots);
-    }
-    robots.content = "noindex,nofollow";
+    return node;
   }
 
-  function isAllowedStatus(value) {
-    return value === "prelaunch" || value === "open" || value === "closed";
+  function localized(value) {
+    return value && typeof value[language] === "string" ? value[language] : "";
   }
 
-  const configuredStatus = config && isAllowedStatus(config.status) ? config.status : "prelaunch";
-  const effectiveStatus = configuredStatus === "open" ? "prelaunch" : configuredStatus;
+  function idPart(value) {
+    return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
 
   function parseDate(value) {
     if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
       return null;
     }
-
     const date = new Date(value + "T00:00:00Z");
     return Number.isNaN(date.getTime()) ? null : date;
   }
 
-  function formatWindowLabel(language) {
+  function formatWindowLabel() {
     const start = config && parseDate(config.windowStart);
     const end = config && parseDate(config.windowEnd);
-
     if (!start || !end) {
       return "";
     }
-
-    const locale = language === "tr" ? "tr-TR" : "en-GB";
     const startFormatter = new Intl.DateTimeFormat(locale, {
       day: "numeric",
       month: "long",
@@ -106,770 +122,840 @@
       year: "numeric",
       timeZone: "UTC"
     });
-
-    return copy[language].windowPrefix + ": " + startFormatter.format(start) + "–" + endFormatter.format(end);
+    return ui.windowPrefix + ": " + startFormatter.format(start) + "–" + endFormatter.format(end);
   }
 
-  function makeContactLink(language, className) {
+  function makeContactLink(className) {
     if (!config || typeof config.contactEmail !== "string" || !config.contactEmail.includes("@")) {
       return null;
     }
-
-    const link = document.createElement("a");
-    if (className) {
-      link.className = className;
-    }
-    link.href = "mailto:" + config.contactEmail + "?subject=" + encodeURIComponent(copy[language].emailSubject);
+    const link = element("a", className || "");
+    link.href = "mailto:" + config.contactEmail + "?subject=" + encodeURIComponent(ui.emailSubject);
     return link;
   }
 
-  function populateConfigurationLinks() {
-    document.querySelectorAll("[data-window-label]").forEach(function (element) {
-      const label = formatWindowLabel(pageLanguage);
+  function populatePublicPage() {
+    document.querySelectorAll("[data-window-label]").forEach(function (node) {
+      const label = formatWindowLabel();
       if (label) {
-        element.textContent = label;
-      }
-    });
-
-    document.querySelectorAll("[data-official-call-link]").forEach(function (link) {
-      if (!config || !config.officialCallDocumentUrl) {
-        link.hidden = true;
-        link.removeAttribute("href");
-        return;
-      }
-
-      try {
-        const url = new URL(config.officialCallDocumentUrl);
-        if (url.protocol !== "https:") {
-          throw new Error("Official document URL must use HTTPS.");
-        }
-        link.href = url.href;
-        link.hidden = false;
-      } catch (_error) {
-        link.hidden = true;
-        link.removeAttribute("href");
+        node.textContent = label;
       }
     });
 
     document.querySelectorAll("[data-contact-link]").forEach(function (slot) {
-      const link = makeContactLink(pageLanguage, slot.dataset.contactClass || "");
+      const link = makeContactLink(slot.dataset.contactClass || "");
       if (!link) {
         slot.hidden = true;
         return;
       }
-
-      link.textContent = slot.dataset.contactText === "email" ? config.contactEmail : copy[pageLanguage].contact;
+      link.textContent = slot.dataset.contactText === "email" ? config.contactEmail : ui.contact;
       slot.replaceChildren(link);
       slot.hidden = false;
     });
-  }
 
-  function makePrimaryCta(language, placement) {
-    const isNavigation = placement === "nav";
-    const className = isNavigation ? "nav-cta" : "button primary";
-
-    if (effectiveStatus === "open") {
-      const link = document.createElement("a");
-      link.className = className;
-      link.textContent = copy[language].open;
-      link.href = language === "tr"
-        ? "#" + config.applicationSectionId
-        : "/tr/basvur/digitaltr/#" + config.applicationSectionId;
-      return link;
-    }
-
-    const status = document.createElement("span");
-    status.className = className + " " + (isNavigation ? "nav-cta--inactive" : "button--inactive");
-    status.setAttribute("aria-disabled", "true");
-    status.textContent = copy[language][effectiveStatus];
-    return status;
-  }
-
-  function populatePrimaryCtas() {
     document.querySelectorAll("[data-digitaltr-primary-cta]").forEach(function (slot) {
-      const placement = slot.dataset.placement || "content";
-      slot.replaceChildren(makePrimaryCta(pageLanguage, placement));
+      const link = element("a", slot.dataset.placement === "nav" ? "nav-cta" : "button primary", ui.open);
+      link.href = "#" + config.applicationSectionId;
+      slot.replaceChildren(link);
     });
   }
 
-  function makeNotice(kind, title, body, language, includeContact) {
-    const notice = document.createElement("div");
-    notice.className = "application-notice application-notice--" + kind;
-
-    const heading = document.createElement("h3");
-    heading.textContent = title;
-    notice.appendChild(heading);
-
-    const paragraph = document.createElement("p");
-    paragraph.textContent = body;
-    notice.appendChild(paragraph);
-
-    if (includeContact) {
-      const actions = document.createElement("div");
-      actions.className = "card-actions";
-      const contactLink = makeContactLink(language, "button secondary");
-      if (contactLink) {
-        contactLink.textContent = copy[language].contact;
-        actions.appendChild(contactLink);
-        notice.appendChild(actions);
-      }
-    }
-
-    return notice;
-  }
-
-  function getPocSettings() {
-    if (window.location.search !== POC_QUERY || !config ||
-        config.environment !== "TEST" ||
-        config.protocolVersion !== "0.1" ||
-        config.schemaVersion !== "0.2-poc" ||
-        !pocCopy || !pocCopy[pageLanguage]) {
-      return null;
-    }
-
-    const configuredLanguage = config.formLanguages && config.formLanguages[pageLanguage];
-    if (configuredLanguage !== "tr-TR" && configuredLanguage !== "en-GB") {
-      return null;
-    }
-
-    if (typeof config.recaptchaSiteKey !== "string" || !config.recaptchaSiteKey.trim()) {
-      return null;
-    }
-
-    try {
-      const bridgeUrl = new URL(config.appsScriptBridgeUrl);
-      if (bridgeUrl.protocol !== "https:" || bridgeUrl.hostname !== "script.google.com") {
-        return null;
-      }
-
-      return {
-        bridgeUrl: bridgeUrl.href,
-        formLanguage: configuredLanguage,
-        protocolVersion: config.protocolVersion,
-        schemaVersion: config.schemaVersion,
-        siteKey: config.recaptchaSiteKey
-      };
-    } catch (_error) {
-      return null;
-    }
-  }
-
-  function makeElement(tagName, className, text) {
-    const element = document.createElement(tagName);
-    if (className) {
-      element.className = className;
-    }
-    if (typeof text === "string") {
-      element.textContent = text;
-    }
-    return element;
-  }
-
-  function appendRequiredMarker(label, languageCopy) {
-    const marker = makeElement("span", "digitaltr-form__required", " *");
+  function requiredMarker(target) {
+    const marker = element("span", "digitaltr-form__required", " *");
     marker.setAttribute("aria-hidden", "true");
-    label.appendChild(marker);
-
-    const requiredText = makeElement("span", "digitaltr-form__visually-hidden", " (" + languageCopy.required + ")");
-    label.appendChild(requiredText);
+    target.appendChild(marker);
+    const hidden = element("span", "digitaltr-form__visually-hidden", " (" + ui.required + ")");
+    target.appendChild(hidden);
   }
 
-  function createTextField(refs, options, languageCopy) {
-    const wrapper = makeElement(
-      "div",
-      "digitaltr-form__field" + (options.full ? " digitaltr-form__field--full" : "")
-    );
-    const label = makeElement("label", "", options.label);
-    label.htmlFor = options.id;
-    appendRequiredMarker(label, languageCopy);
+  function applyInputConstraints(control, field) {
+    const rules = field.validation || {};
+    if (typeof rules.minLength === "number") {
+      control.minLength = rules.minLength;
+    }
+    if (typeof rules.maxLength === "number") {
+      control.maxLength = rules.maxLength;
+    }
+    if (rules.min !== undefined) {
+      control.min = rules.min;
+    }
+    if (rules.max !== undefined) {
+      control.max = rules.max;
+    }
+    if (rules.step !== undefined) {
+      control.step = rules.step;
+    }
+  }
 
-    const control = options.control === "textarea"
+  function renderChoiceGroup(field, fieldId, name) {
+    const fieldset = document.createElement("fieldset");
+    fieldset.className = "digitaltr-form__choice-fieldset";
+    const legend = element("legend", "digitaltr-form__label", localized(field.label));
+    if (field.required) {
+      requiredMarker(legend);
+    }
+    fieldset.appendChild(legend);
+
+    const choices = element(
+      "div",
+      field.fieldKey === "APPLICANT_SELECTED_SERVICES"
+        ? "digitaltr-form__service-grid"
+        : "digitaltr-form__choices"
+    );
+    const controls = [];
+    field.options.forEach(function (option, index) {
+      const optionId = fieldId + "-" + String(index + 1);
+      const label = element(
+        "label",
+        field.fieldKey === "APPLICANT_SELECTED_SERVICES"
+          ? "digitaltr-form__service-card"
+          : "digitaltr-form__choice"
+      );
+      const input = document.createElement("input");
+      input.type = field.type === "radio-group" ? "radio" : "checkbox";
+      input.id = optionId;
+      input.name = name;
+      input.value = option.value;
+      const labelText = element("span", "", localized(option.label));
+      label.append(input, labelText);
+
+      if (field.fieldKey === "APPLICANT_SELECTED_SERVICES") {
+        const service = schema.services.find(function (item) {
+          return item.code === option.value;
+        });
+        labelText.className = "digitaltr-form__service-card-content";
+        const strong = element("strong", "", localized(option.label));
+        const description = element("span", "", service ? localized(service.description) : "");
+        labelText.replaceChildren(strong, description);
+        input.addEventListener("change", function () {
+          label.dataset.selected = input.checked ? "true" : "false";
+        });
+      }
+
+      choices.appendChild(label);
+      controls.push(input);
+    });
+    fieldset.appendChild(choices);
+    return { container: fieldset, controls: controls, focusTarget: controls[0] };
+  }
+
+  function renderSingleControl(field, fieldId, name) {
+    const control = field.type === "textarea"
       ? document.createElement("textarea")
-      : document.createElement("input");
-    control.id = options.id;
-    control.name = options.name;
-    control.required = true;
-    control.autocomplete = "off";
-    control.minLength = options.minLength;
-    control.maxLength = options.maxLength;
+      : field.type === "select"
+        ? document.createElement("select")
+        : document.createElement("input");
+
+    control.id = fieldId;
+    control.name = name;
+    control.autocomplete = field.autocomplete || "off";
+
     if (control.tagName === "INPUT") {
-      control.type = options.type || "text";
+      control.type = field.type;
+    }
+    if (control.tagName === "SELECT") {
+      const empty = element("option", "", ui.selectPrompt);
+      empty.value = "";
+      control.appendChild(empty);
+      field.options.forEach(function (option) {
+        const node = element("option", "", localized(option.label));
+        node.value = option.value;
+        control.appendChild(node);
+      });
+    }
+    applyInputConstraints(control, field);
+    return { container: control, controls: [control], focusTarget: control };
+  }
+
+  function renderCheckbox(field, fieldId, name) {
+    const label = element("label", "digitaltr-form__choice digitaltr-form__choice--statement");
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.id = fieldId;
+    input.name = name;
+    const labelText = element("span", "", localized(field.label));
+    if (field.required) {
+      requiredMarker(labelText);
+    }
+    label.append(input, labelText);
+    return { container: label, controls: [input], focusTarget: input, labelInside: true };
+  }
+
+  function renderField(field, prefix) {
+    const instancePrefix = prefix ? prefix + "-" : "";
+    const fieldId = "digitaltr-" + instancePrefix + idPart(field.fieldKey);
+    const fieldName = prefix
+      ? "partners[" + prefix + "][" + field.fieldKey + "]"
+      : field.fieldKey;
+    const full = field.type === "textarea" ||
+      field.type === "checkbox-group" ||
+      field.type === "radio-group" ||
+      field.type === "checkbox" ||
+      field.fieldKey === "ORG_ADDRESS";
+    const wrapper = element("div", "digitaltr-form__field" + (full ? " digitaltr-form__field--full" : ""));
+    wrapper.dataset.fieldKey = field.fieldKey;
+
+    let rendered;
+    if (field.type === "checkbox-group" || field.type === "radio-group") {
+      rendered = renderChoiceGroup(field, fieldId, fieldName);
+      wrapper.appendChild(rendered.container);
+    } else if (field.type === "checkbox") {
+      rendered = renderCheckbox(field, fieldId, fieldName);
+      wrapper.appendChild(rendered.container);
+    } else {
+      const label = element("label", "", localized(field.label));
+      label.htmlFor = fieldId;
+      if (field.required) {
+        requiredMarker(label);
+      }
+      rendered = renderSingleControl(field, fieldId, fieldName);
+      wrapper.append(label, rendered.container);
     }
 
     const describedBy = [];
-    let help = null;
-    if (options.help) {
-      help = makeElement("span", "digitaltr-form__help", options.help);
-      help.id = options.id + "-help";
+    const helpText = localized(field.help);
+    if (helpText || field.validation.maxWords) {
+      let visibleHelp = helpText;
+      if (field.validation.maxWords) {
+        const wordText = language === "tr"
+          ? "En fazla " + field.validation.maxWords + " kelime."
+          : "Maximum " + field.validation.maxWords + " words.";
+        visibleHelp = visibleHelp ? visibleHelp + " " + wordText : wordText;
+      }
+      const help = element("span", "digitaltr-form__help", visibleHelp);
+      help.id = fieldId + "-help";
+      wrapper.appendChild(help);
       describedBy.push(help.id);
     }
 
-    const error = makeElement("span", "digitaltr-form__error");
-    error.id = options.id + "-error";
+    const error = element("span", "digitaltr-form__error");
+    error.id = fieldId + "-error";
     error.hidden = true;
-    describedBy.push(error.id);
-    control.setAttribute("aria-describedby", describedBy.join(" "));
-
-    wrapper.appendChild(label);
-    wrapper.appendChild(control);
-    if (help) {
-      wrapper.appendChild(help);
-    }
     wrapper.appendChild(error);
+    describedBy.push(error.id);
 
-    refs[options.fieldKey] = {
-      error: error,
-      focusTarget: control,
-      invalidTarget: control
+    rendered.controls.forEach(function (control) {
+      control.setAttribute("aria-describedby", describedBy.join(" "));
+    });
+    if (rendered.container.tagName === "FIELDSET") {
+      rendered.container.setAttribute("aria-describedby", describedBy.join(" "));
+    }
+
+    return {
+      field: field,
+      wrapper: wrapper,
+      controls: rendered.controls,
+      focusTarget: rendered.focusTarget,
+      error: error
     };
-    return wrapper;
   }
 
-  function createServiceFieldset(refs, languageCopy) {
-    const fieldset = document.createElement("fieldset");
-    const legend = makeElement("legend", "", languageCopy.servicesLegend);
-    appendRequiredMarker(legend, languageCopy);
-
-    const serviceGrid = makeElement("div", "digitaltr-form__service-grid");
-    const checkboxes = [];
-
-    services.forEach(function (service, index) {
-      const label = makeElement("label", "digitaltr-form__service-card");
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.name = "selectedServices";
-      checkbox.value = service.code;
-      checkbox.id = "digitaltr-poc-service-" + String(index + 1);
-      checkbox.setAttribute("aria-describedby", "digitaltr-poc-services-error");
-      checkbox.addEventListener("change", function () {
-        label.dataset.selected = checkbox.checked ? "true" : "false";
+  function readValue(reference) {
+    if (!reference || reference.controls.length === 0) {
+      return "";
+    }
+    if (reference.field.type === "checkbox-group") {
+      return reference.controls.filter(function (control) {
+        return control.checked;
+      }).map(function (control) {
+        return control.value;
       });
-
-      const name = makeElement("strong", "", service[pageLanguage]);
-      const code = makeElement("span", "", service.code);
-      label.append(checkbox, name, code);
-      serviceGrid.appendChild(label);
-      checkboxes.push(checkbox);
-    });
-
-    const error = makeElement("span", "digitaltr-form__error");
-    error.id = "digitaltr-poc-services-error";
-    error.hidden = true;
-    fieldset.setAttribute("aria-required", "true");
-    fieldset.setAttribute("aria-describedby", error.id);
-    fieldset.append(legend, serviceGrid, error);
-
-    refs.SELECTED_SERVICE_CODES = {
-      error: error,
-      focusTarget: checkboxes[0],
-      invalidTarget: fieldset
-    };
-    return fieldset;
-  }
-
-  function createDeclarationField(refs, languageCopy) {
-    const wrapper = makeElement("div", "digitaltr-form__field digitaltr-form__field--full");
-    const label = makeElement("label", "digitaltr-form__choice");
-    label.htmlFor = "digitaltr-poc-synthetic";
-
-    const input = document.createElement("input");
-    input.id = "digitaltr-poc-synthetic";
-    input.name = "synthetic";
-    input.type = "checkbox";
-    input.required = true;
-    input.setAttribute("aria-describedby", "digitaltr-poc-synthetic-error");
-
-    const text = makeElement("span", "", languageCopy.declarationLabel);
-    const marker = makeElement("span", "digitaltr-form__required", " *");
-    marker.setAttribute("aria-hidden", "true");
-    text.appendChild(marker);
-
-    const error = makeElement("span", "digitaltr-form__error");
-    error.id = "digitaltr-poc-synthetic-error";
-    error.hidden = true;
-
-    label.append(input, text);
-    wrapper.append(label, error);
-    refs.POC_SYNTHETIC_DATA_CONFIRMATION = {
-      error: error,
-      focusTarget: input,
-      invalidTarget: input
-    };
-    return wrapper;
-  }
-
-  function createPocForm(languageCopy) {
-    const refs = {};
-    const root = makeElement("div", "digitaltr-form");
-    root.setAttribute("data-digitaltr-poc-form", "");
-    root.dataset.schemaVersion = config.schemaVersion;
-
-    const title = makeElement("h3", "", languageCopy.title);
-    const intro = makeElement("p", "digitaltr-form__description", languageCopy.intro);
-    const form = document.createElement("form");
-    form.id = "digitaltr-poc-form";
-    form.noValidate = true;
-    form.autocomplete = "off";
-
-    const organizationSection = makeElement("div", "digitaltr-form__section");
-    const organizationFieldset = document.createElement("fieldset");
-    const organizationLegend = makeElement("legend", "", languageCopy.organizationLegend);
-    const organizationGrid = makeElement("div", "digitaltr-form__grid");
-    organizationGrid.append(
-      createTextField(refs, {
-        fieldKey: "ORG_LEGAL_NAME",
-        id: "digitaltr-poc-organization",
-        name: "organizationLegalName",
-        label: languageCopy.organizationLabel,
-        minLength: 2,
-        maxLength: 200
-      }, languageCopy),
-      createTextField(refs, {
-        fieldKey: "CONTACT_FULL_NAME",
-        id: "digitaltr-poc-contact",
-        name: "contactFullName",
-        label: languageCopy.contactLabel,
-        minLength: 2,
-        maxLength: 120
-      }, languageCopy),
-      createTextField(refs, {
-        fieldKey: "CONTACT_EMAIL",
-        id: "digitaltr-poc-email",
-        name: "contactEmail",
-        label: languageCopy.emailLabel,
-        minLength: 3,
-        maxLength: 254,
-        type: "email",
-        full: true
-      }, languageCopy)
-    );
-    organizationFieldset.append(organizationLegend, organizationGrid);
-    organizationSection.appendChild(organizationFieldset);
-
-    const servicesSection = makeElement("div", "digitaltr-form__section");
-    const servicesFieldset = createServiceFieldset(refs, languageCopy);
-    const descriptionGrid = makeElement("div", "digitaltr-form__grid");
-    descriptionGrid.style.marginTop = "22px";
-    descriptionGrid.appendChild(createTextField(refs, {
-      fieldKey: "POC_TEST_TEXT",
-      id: "digitaltr-poc-description",
-      name: "testText",
-      label: languageCopy.descriptionLabel,
-      minLength: 10,
-      maxLength: 1000,
-      control: "textarea",
-      help: languageCopy.descriptionHelp,
-      full: true
-    }, languageCopy));
-    servicesSection.append(servicesFieldset, descriptionGrid);
-
-    const declarationSection = makeElement("div", "digitaltr-form__section");
-    const declarationFieldset = document.createElement("fieldset");
-    declarationFieldset.append(
-      makeElement("legend", "", languageCopy.declarationLegend),
-      createDeclarationField(refs, languageCopy)
-    );
-    declarationSection.appendChild(declarationFieldset);
-
-    const status = makeElement("div", "digitaltr-form__alert", languageCopy.preparing);
-    status.id = "digitaltr-poc-status";
-    status.setAttribute("role", "status");
-    status.setAttribute("aria-live", "polite");
-    status.setAttribute("aria-atomic", "true");
-    status.tabIndex = -1;
-
-    const actions = makeElement("div", "digitaltr-form__actions");
-    const submitButton = makeElement(
-      "button",
-      "digitaltr-form__button digitaltr-form__button--primary",
-      languageCopy.submit
-    );
-    submitButton.type = "submit";
-    submitButton.disabled = true;
-    actions.appendChild(submitButton);
-
-    form.append(
-      organizationSection,
-      servicesSection,
-      declarationSection,
-      status,
-      actions
-    );
-    root.append(title, intro, form);
-
-    return {
-      form: form,
-      refs: refs,
-      root: root,
-      status: status,
-      submitButton: submitButton
-    };
-  }
-
-  function clearFieldErrors(refs) {
-    Object.keys(refs).forEach(function (fieldKey) {
-      const ref = refs[fieldKey];
-      ref.error.textContent = "";
-      ref.error.hidden = true;
-      ref.invalidTarget.removeAttribute("aria-invalid");
-    });
-  }
-
-  function showFieldError(ref, message) {
-    ref.error.textContent = message;
-    ref.error.hidden = false;
-    ref.invalidTarget.setAttribute("aria-invalid", "true");
-  }
-
-  function setStatusMessage(status, kind, message) {
-    status.className = "digitaltr-form__alert";
-    if (kind === "error" || kind === "success") {
-      status.classList.add("digitaltr-form__alert--" + kind);
     }
-    status.setAttribute("role", kind === "error" ? "alert" : "status");
-    status.setAttribute("aria-live", kind === "error" ? "assertive" : "polite");
-    status.textContent = message;
+    if (reference.field.type === "radio-group") {
+      const selected = reference.controls.find(function (control) {
+        return control.checked;
+      });
+      return selected ? selected.value : "";
+    }
+    if (reference.field.type === "checkbox") {
+      return reference.controls[0].checked;
+    }
+    return reference.controls[0].value.trim();
   }
 
-  function setReceiptStatus(status, languageCopy, response, fallbackSubmissionId, previousReceipt) {
-    const receiptId = typeof response.receiptId === "string" ? response.receiptId : "";
-    const submissionId = typeof response.submissionId === "string"
-      ? response.submissionId
-      : fallbackSubmissionId;
-    if (!receiptId || !UUID_PATTERN.test(submissionId)) {
-      throw new Error("Invalid TEST receipt.");
+  function serviceSelection(view) {
+    return new Set(readValue(view.refs.get("APPLICANT_SELECTED_SERVICES")));
+  }
+
+  function fieldValue(view, fieldKey, partner) {
+    const reference = partner
+      ? partner.refs.get(fieldKey)
+      : view.refs.get(fieldKey);
+    return readValue(reference);
+  }
+
+  function ruleMatches(rule, view, partner) {
+    if (!rule || rule.type === "always") {
+      return true;
+    }
+    if (rule.all) {
+      return rule.all.every(function (childRule) {
+        return ruleMatches(childRule, view, partner);
+      });
+    }
+    if (rule.serviceSelected) {
+      return serviceSelection(view).has(rule.serviceSelected);
     }
 
-    const parsedReceivedAt = typeof response.receivedAt === "string"
-      ? new Date(response.receivedAt)
-      : null;
-    const canReusePreviousReceipt = previousReceipt &&
-      previousReceipt.receiptId === receiptId &&
-      previousReceipt.submissionId === submissionId;
-    const receivedAt = parsedReceivedAt && !Number.isNaN(parsedReceivedAt.getTime())
-      ? parsedReceivedAt.toISOString()
-      : (canReusePreviousReceipt ? previousReceipt.receivedAt : new Date().toISOString());
-
-    const receipt = makeElement("dl", "digitaltr-form__receipt");
-    [
-      [languageCopy.receiptId, receiptId],
-      [languageCopy.submissionId, submissionId],
-      [languageCopy.receivedAt, receivedAt]
-    ].forEach(function (item) {
-      receipt.append(
-        makeElement("dt", "", item[0]),
-        makeElement("dd", "", item[1])
-      );
-    });
-
-    status.className = "digitaltr-form__alert digitaltr-form__alert--success";
-    status.setAttribute("role", "status");
-    status.setAttribute("aria-live", "polite");
-    status.replaceChildren(receipt);
-    return {
-      receiptId: receiptId,
-      receivedAt: receivedAt,
-      submissionId: submissionId
-    };
+    const dependentKey = rule.repeatableFieldKey || rule.fieldKey;
+    const value = fieldValue(view, dependentKey, rule.repeatableFieldKey ? partner : null);
+    if (rule.contains) {
+      return Array.isArray(value) && value.includes(rule.contains);
+    }
+    if (Object.prototype.hasOwnProperty.call(rule, "equals")) {
+      return value === rule.equals;
+    }
+    return true;
   }
 
-  function validatePocForm(form, refs, languageCopy) {
-    clearFieldErrors(refs);
+  function clearError(reference) {
+    reference.error.hidden = true;
+    reference.error.textContent = "";
+    reference.controls.forEach(function (control) {
+      control.removeAttribute("aria-invalid");
+    });
+    const fieldset = reference.wrapper.querySelector("fieldset");
+    if (fieldset) {
+      fieldset.removeAttribute("aria-invalid");
+    }
+  }
+
+  function setError(reference, message) {
+    reference.error.textContent = message;
+    reference.error.hidden = false;
+    reference.controls.forEach(function (control) {
+      control.setAttribute("aria-invalid", "true");
+    });
+    const fieldset = reference.wrapper.querySelector("fieldset");
+    if (fieldset) {
+      fieldset.setAttribute("aria-invalid", "true");
+    }
+  }
+
+  function setReferenceVisible(reference, visible) {
+    reference.wrapper.hidden = !visible;
+    reference.controls.forEach(function (control) {
+      control.disabled = !visible;
+    });
+    if (!visible) {
+      clearError(reference);
+    }
+  }
+
+  function updatePartnerTitles(view) {
+    view.partners.forEach(function (partner, index) {
+      partner.title.textContent = ui.partnerTitle + " " + String(index + 1);
+    });
+  }
+
+  function updateVisibility(view) {
+    const selected = serviceSelection(view);
+
+    view.sections.forEach(function (sectionState) {
+      const visible = sectionState.schema.serviceCode === "COMMON" || selected.has(sectionState.schema.serviceCode);
+      sectionState.node.hidden = !visible;
+      sectionState.navItem.hidden = !visible;
+      sectionState.node.querySelectorAll("input, select, textarea, button").forEach(function (control) {
+        control.disabled = !visible;
+      });
+    });
+
+    view.refs.forEach(function (reference) {
+      const sectionState = view.sections.get(reference.field.sectionKey);
+      const sectionVisible = sectionState && !sectionState.node.hidden;
+      setReferenceVisible(reference, Boolean(sectionVisible && ruleMatches(reference.field.conditionalVisibility, view, null)));
+    });
+
+    view.partners.forEach(function (partner) {
+      const partnerSection = view.sections.get("s4-partners");
+      const partnerSectionVisible = partnerSection && !partnerSection.node.hidden;
+      partner.refs.forEach(function (reference) {
+        setReferenceVisible(reference, Boolean(
+          partnerSectionVisible && ruleMatches(reference.field.conditionalVisibility, view, partner)
+        ));
+      });
+    });
+  }
+
+  function addPartner(view) {
+    const partnerNumber = view.nextPartnerNumber;
+    view.nextPartnerNumber += 1;
+    const partner = {
+      key: "p" + String(partnerNumber),
+      refs: new Map()
+    };
+    const card = element("article", "digitaltr-form__partner");
+    const header = element("div", "digitaltr-form__partner-header");
+    partner.title = element("h4", "", ui.partnerTitle);
+    const remove = element("button", "digitaltr-form__button digitaltr-form__button--secondary", ui.removePartner);
+    remove.type = "button";
+    header.append(partner.title, remove);
+
+    const grid = element("div", "digitaltr-form__grid");
+    schema.partnerFields.forEach(function (field) {
+      const reference = renderField(field, partner.key);
+      partner.refs.set(field.fieldKey, reference);
+      grid.appendChild(reference.wrapper);
+    });
+    card.append(header, grid);
+    partner.card = card;
+    view.partnerList.appendChild(card);
+    view.partners.push(partner);
+    updatePartnerTitles(view);
+    updateVisibility(view);
+
+    partner.refs.forEach(function (reference) {
+      reference.controls.forEach(function (control) {
+        control.addEventListener("input", function () {
+          clearError(reference);
+          syncInHouseChoice(partner.refs, control);
+          updateVisibility(view);
+        });
+        control.addEventListener("change", function () {
+          clearError(reference);
+          syncInHouseChoice(partner.refs, control);
+          updateVisibility(view);
+        });
+      });
+    });
+
+    remove.addEventListener("click", function () {
+      const index = view.partners.indexOf(partner);
+      if (index !== -1) {
+        view.partners.splice(index, 1);
+      }
+      card.remove();
+      updatePartnerTitles(view);
+      view.addPartnerButton.focus();
+    });
+
+    const first = partner.refs.get("DTR_S4_PARTNER_ORG_LEGAL_NAME");
+    if (first) {
+      first.focusTarget.focus();
+    }
+  }
+
+  function referenceBySuffix(refs, suffix) {
+    for (const entry of refs.entries()) {
+      if (entry[0].endsWith(suffix)) {
+        return entry[1];
+      }
+    }
+    return null;
+  }
+
+  function syncInHouseChoice(refs, changedControl) {
+    const none = referenceBySuffix(refs, "NO_IN_HOUSE_DEVELOPMENT");
+    const percentages = [
+      referenceBySuffix(refs, "OWN_PRODUCT_PERCENT"),
+      referenceBySuffix(refs, "OWN_SERVICE_PERCENT"),
+      referenceBySuffix(refs, "OWN_SOFTWARE_PERCENT")
+    ].filter(Boolean);
+    if (!none) {
+      return;
+    }
+    if (changedControl === none.controls[0] && none.controls[0].checked) {
+      percentages.forEach(function (reference) {
+        reference.controls[0].value = "";
+        clearError(reference);
+      });
+      return;
+    }
+    if (percentages.some(function (reference) {
+      return changedControl === reference.controls[0] && reference.controls[0].value !== "";
+    })) {
+      none.controls[0].checked = false;
+      clearError(none);
+    }
+  }
+
+  function renderSection(view, sectionSchema) {
+    const section = element("section", "digitaltr-form__section");
+    section.id = "digitaltr-section-" + idPart(sectionSchema.key);
+    section.setAttribute("aria-labelledby", section.id + "-title");
+    const header = element("div", "digitaltr-form__section-header");
+    const heading = element("h3", "", localized(sectionSchema.label));
+    heading.id = section.id + "-title";
+    header.appendChild(heading);
+    const description = localized(sectionSchema.description);
+    if (description) {
+      header.appendChild(element("p", "digitaltr-form__section-description", description));
+    }
+    section.appendChild(header);
+
+    if (sectionSchema.repeatable === "DTR_S4_PARTNERS") {
+      view.partnerList = element("div", "digitaltr-form__partner-list");
+      view.addPartnerButton = element("button", "digitaltr-form__button digitaltr-form__button--secondary", ui.addPartner);
+      view.addPartnerButton.type = "button";
+      view.addPartnerButton.addEventListener("click", function () {
+        addPartner(view);
+      });
+      const controls = element("div", "digitaltr-form__partner-controls");
+      controls.appendChild(view.addPartnerButton);
+      section.append(view.partnerList, controls);
+    } else {
+      const grid = element("div", "digitaltr-form__grid");
+      schema.fields.filter(function (field) {
+        return field.sectionKey === sectionSchema.key && field.type !== "computed";
+      }).forEach(function (field) {
+        const reference = renderField(field, "");
+        view.refs.set(field.fieldKey, reference);
+        grid.appendChild(reference.wrapper);
+      });
+      section.appendChild(grid);
+    }
+
+    const navItem = document.createElement("li");
+    const navLink = element("a", "", localized(sectionSchema.label));
+    navLink.href = "#" + section.id;
+    navItem.appendChild(navLink);
+    view.navList.appendChild(navItem);
+    view.sections.set(sectionSchema.key, {
+      schema: sectionSchema,
+      node: section,
+      navItem: navItem
+    });
+    view.form.appendChild(section);
+  }
+
+  function validationMessage(reference) {
+    const field = reference.field;
+    const rules = field.validation || {};
+    const value = readValue(reference);
+
+    if (field.required) {
+      if (field.type === "checkbox" && value !== true) {
+        return ui.requiredError;
+      }
+      if (Array.isArray(value) && value.length === 0) {
+        return field.fieldKey === "APPLICANT_SELECTED_SERVICES" ? ui.serviceError : ui.selectionError;
+      }
+      if (!Array.isArray(value) && field.type !== "checkbox" && value === "") {
+        return ui.requiredError;
+      }
+    }
+    if (value === "" || (Array.isArray(value) && value.length === 0) || value === false) {
+      return "";
+    }
+    if (Array.isArray(value)) {
+      if (typeof rules.minSelections === "number" && value.length < rules.minSelections) {
+        return ui.selectionError;
+      }
+      if (typeof rules.maxSelections === "number" && value.length > rules.maxSelections) {
+        return ui.selectionError;
+      }
+      return "";
+    }
+    if (typeof value === "string") {
+      if ((typeof rules.minLength === "number" && value.length < rules.minLength) ||
+        (typeof rules.maxLength === "number" && value.length > rules.maxLength)) {
+        return ui.lengthError;
+      }
+      if (typeof rules.maxWords === "number") {
+        const words = value.split(/\s+/).filter(Boolean).length;
+        if (words > rules.maxWords) {
+          return ui.wordError.replace("{count}", String(rules.maxWords));
+        }
+      }
+      if (rules.format === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        return ui.emailError;
+      }
+      if (rules.format === "phone" && !/^[+0-9().\s-]{7,40}$/.test(value)) {
+        return ui.phoneError;
+      }
+      if (rules.format === "url") {
+        try {
+          const url = new URL(value);
+          if (url.protocol !== "https:" && url.protocol !== "http:") {
+            return ui.urlError;
+          }
+        } catch (_error) {
+          return ui.urlError;
+        }
+      }
+    }
+    if (field.type === "number") {
+      const number = Number(value);
+      const base = rules.min !== undefined ? Number(rules.min) : 0;
+      const stepMismatch = typeof rules.step === "number" &&
+        Math.abs(((number - base) / rules.step) - Math.round((number - base) / rules.step)) > 1e-9;
+      if (!Number.isFinite(number) ||
+        (rules.min !== undefined && number < Number(rules.min)) ||
+        (rules.max !== undefined && number > Number(rules.max)) ||
+        stepMismatch) {
+        return ui.numberError;
+      }
+    }
+    if (field.type === "month" &&
+      ((rules.min && value < rules.min) || (rules.max && value > rules.max))) {
+      return ui.numberError;
+    }
+    if (Array.isArray(rules.allowedValues) && !rules.allowedValues.includes(value)) {
+      return ui.selectionError;
+    }
+    if (rules.mustBe === true && value !== true) {
+      return ui.requiredError;
+    }
+    return "";
+  }
+
+  function validateInHouseGroup(refs, errors) {
+    const none = referenceBySuffix(refs, "NO_IN_HOUSE_DEVELOPMENT");
+    const percentages = [
+      referenceBySuffix(refs, "OWN_PRODUCT_PERCENT"),
+      referenceBySuffix(refs, "OWN_SERVICE_PERCENT"),
+      referenceBySuffix(refs, "OWN_SOFTWARE_PERCENT")
+    ].filter(Boolean);
+    if (!none || none.wrapper.hidden || none.controls[0].checked) {
+      return;
+    }
+    const hasPercentage = percentages.some(function (reference) {
+      return !reference.wrapper.hidden && readValue(reference) !== "";
+    });
+    if (!hasPercentage && percentages.length > 0) {
+      const reference = percentages[0];
+      setError(reference, ui.inHouseError);
+      errors.push({ reference: reference, message: ui.inHouseError });
+    }
+  }
+
+  function validate(view) {
     const errors = [];
-    const organizationLegalName = form.elements.organizationLegalName.value.trim();
-    const contactFullName = form.elements.contactFullName.value.trim();
-    const contactEmail = form.elements.contactEmail.value.trim().toLowerCase();
-    const testText = form.elements.testText.value.trim();
-    const selectedServices = Array.from(
-      form.querySelectorAll('input[name="selectedServices"]:checked'),
-      function (input) { return input.value; }
-    );
-    const synthetic = form.elements.synthetic.checked;
-
-    function addError(fieldKey, message) {
-      showFieldError(refs[fieldKey], message);
-      errors.push(refs[fieldKey]);
-    }
-
-    if (organizationLegalName.length < 2 || organizationLegalName.length > 200) {
-      addError("ORG_LEGAL_NAME", languageCopy.errors.organizationRequired);
-    }
-    if (contactFullName.length < 2 || contactFullName.length > 120) {
-      addError("CONTACT_FULL_NAME", languageCopy.errors.contactRequired);
-    }
-    if (contactEmail.length < 3 || contactEmail.length > 254 ||
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)) {
-      addError("CONTACT_EMAIL", languageCopy.errors.emailInvalid);
-    }
-    if (selectedServices.length < 1 || selectedServices.length > 4) {
-      addError("SELECTED_SERVICE_CODES", languageCopy.errors.servicesRequired);
-    }
-    if (testText.length < 10 || testText.length > 1000) {
-      addError("POC_TEST_TEXT", languageCopy.errors.descriptionInvalid);
-    }
-    if (!synthetic) {
-      addError("POC_SYNTHETIC_DATA_CONFIRMATION", languageCopy.errors.declarationRequired);
-    }
-
-    return {
-      errors: errors,
-      values: {
-        contactEmail: contactEmail,
-        contactFullName: contactFullName,
-        organizationLegalName: organizationLegalName,
-        selectedServices: selectedServices,
-        testText: testText
+    view.refs.forEach(function (reference) {
+      clearError(reference);
+      if (reference.wrapper.hidden || reference.controls.every(function (control) { return control.disabled; })) {
+        return;
       }
+      const message = validationMessage(reference);
+      if (message) {
+        setError(reference, message);
+        errors.push({ reference: reference, message: message });
+      }
+    });
+    validateInHouseGroup(view.refs, errors);
+    view.partners.forEach(function (partner) {
+      partner.refs.forEach(function (reference) {
+        clearError(reference);
+        if (reference.wrapper.hidden || reference.controls.every(function (control) { return control.disabled; })) {
+          return;
+        }
+        const message = validationMessage(reference);
+        if (message) {
+          setError(reference, message);
+          errors.push({ reference: reference, message: message });
+        }
+      });
+      validateInHouseGroup(partner.refs, errors);
+    });
+    return errors;
+  }
+
+  function showErrorSummary(view, errors) {
+    view.errorList.replaceChildren();
+    errors.forEach(function (error) {
+      const item = document.createElement("li");
+      const link = element("a", "", localized(error.reference.field.label) + ": " + error.message);
+      link.href = "#" + error.reference.focusTarget.id;
+      link.addEventListener("click", function (event) {
+        event.preventDefault();
+        error.reference.focusTarget.focus();
+      });
+      item.appendChild(link);
+      view.errorList.appendChild(item);
+    });
+    view.errorSummary.hidden = errors.length === 0;
+    if (errors.length > 0) {
+      view.errorSummary.focus();
+    }
+  }
+
+  function coerceValue(field, value) {
+    if (field.backendType === "integer") {
+      return Number.parseInt(value, 10);
+    }
+    if (field.backendType === "decimal") {
+      return Number.parseFloat(value);
+    }
+    return value;
+  }
+
+  function collectReferenceValues(refs) {
+    const answers = {};
+    refs.forEach(function (reference, fieldKey) {
+      if (reference.wrapper.hidden || reference.controls.every(function (control) { return control.disabled; })) {
+        return;
+      }
+      const value = readValue(reference);
+      if (value !== "" && (!Array.isArray(value) || value.length > 0)) {
+        answers[fieldKey] = coerceValue(reference.field, value);
+      }
+    });
+    return answers;
+  }
+
+  function collectPayload(view) {
+    const answers = collectReferenceValues(view.refs);
+    const selectedServices = answers.APPLICANT_SELECTED_SERVICES.slice();
+    answers.DECLARATION_SIGNER_NAME = answers.CONTACT_FULL_NAME;
+    answers.DECLARATION_SIGNER_TITLE = answers.CONTACT_POSITION;
+    answers.DECLARATION_DATE = new Date().toISOString();
+    return {
+      schemaVersion: schema.schemaVersion,
+      formLanguage: config.formLanguages[language],
+      selectedServices: selectedServices,
+      answers: answers,
+      partners: view.partners.map(function (partner) {
+        return collectReferenceValues(partner.refs);
+      })
     };
   }
 
-  function applyServerFieldErrors(refs, fieldErrors, languageCopy) {
-    if (!Array.isArray(fieldErrors)) {
-      return [];
-    }
-
-    const marked = [];
-    fieldErrors.forEach(function (fieldError) {
-      const fieldKey = fieldError && fieldError.fieldKey;
-      const ref = refs[fieldKey];
-      if (ref && !marked.includes(ref)) {
-        showFieldError(ref, languageCopy.fieldServerError);
-        marked.push(ref);
-      }
-    });
-    return marked;
-  }
-
-  function getSafeErrorMessage(error, languageCopy) {
-    const code = error && error.code;
-    if (code === "DUPLICATE_SUBMISSION") {
-      return languageCopy.duplicateConflict;
-    }
-    if (code === "VALIDATION_ERROR") {
-      return languageCopy.serverValidation;
-    }
-    if (code === "BOT_VERIFICATION_FAILED") {
-      return languageCopy.botError;
-    }
-    if (code === "PARTIAL_RECOVERY_REQUIRED") {
-      return languageCopy.recoveryError;
-    }
-    return languageCopy.genericError;
-  }
-
-  function getSubmissionId() {
-    let submissionId = "";
-    try {
-      submissionId = window.sessionStorage.getItem(SUBMISSION_STORAGE_KEY) || "";
-    } catch (_error) {
-      submissionId = "";
-    }
-
-    if (!UUID_PATTERN.test(submissionId)) {
-      submissionId = window.crypto.randomUUID();
-      try {
-        window.sessionStorage.setItem(SUBMISSION_STORAGE_KEY, submissionId);
-      } catch (_error) {
-        return submissionId;
-      }
-    }
-    return submissionId;
-  }
-
-  function waitForRecaptchaReady() {
-    return new Promise(function (resolve, reject) {
-      if (!window.grecaptcha || typeof window.grecaptcha.ready !== "function" ||
-          typeof window.grecaptcha.execute !== "function") {
-        reject(new Error("reCAPTCHA is unavailable."));
-        return;
-      }
-      window.grecaptcha.ready(resolve);
+  function serviceNames(codes) {
+    return codes.map(function (code) {
+      const service = schema.services.find(function (item) {
+        return item.code === code;
+      });
+      return service ? localized(service.label) : code;
     });
   }
 
-  function loadRecaptcha(siteKey) {
-    if (window.grecaptcha) {
-      return waitForRecaptchaReady();
-    }
-
-    return new Promise(function (resolve, reject) {
-      const script = document.createElement("script");
-      script.src = "https://www.google.com/recaptcha/api.js?render=" + encodeURIComponent(siteKey);
-      script.async = true;
-      script.defer = true;
-      script.dataset.digitaltrPocRecaptcha = "true";
-      script.addEventListener("load", function () {
-        waitForRecaptchaReady().then(resolve, reject);
-      }, { once: true });
-      script.addEventListener("error", function () {
-        reject(new Error("reCAPTCHA failed to load."));
-      }, { once: true });
-      document.head.appendChild(script);
+  function showSuccess(view, response) {
+    const success = element("section", "digitaltr-form digitaltr-form__success");
+    success.setAttribute("aria-labelledby", "digitaltr-success-title");
+    const heading = element("h3", "", ui.successTitle);
+    heading.id = "digitaltr-success-title";
+    heading.tabIndex = -1;
+    const body = element("p", "digitaltr-form__description", ui.successBody);
+    const receipt = element("dl", "digitaltr-form__receipt");
+    [
+      [ui.appId, response.appId],
+      [ui.selectedServices, serviceNames(response.selectedServices).join(", ")],
+      [ui.receivedAt, new Intl.DateTimeFormat(locale, {
+        dateStyle: "long",
+        timeStyle: "short"
+      }).format(new Date(response.receivedAt))]
+    ].forEach(function (item) {
+      receipt.append(element("dt", "", item[0]), element("dd", "", item[1]));
     });
+    success.append(heading, body, receipt);
+    view.container.replaceChildren(success);
+    heading.focus();
   }
 
-  function renderPocForm(container, settings) {
-    const languageCopy = pocCopy[pageLanguage];
-    const view = createPocForm(languageCopy);
-    const bridgeFrame = document.createElement("iframe");
-    bridgeFrame.id = "digitaltr-poc-bridge";
-    bridgeFrame.className = "digitaltr-poc-bridge";
-    bridgeFrame.hidden = true;
-    bridgeFrame.setAttribute("hidden", "");
-    bridgeFrame.setAttribute("aria-hidden", "true");
-    bridgeFrame.setAttribute("tabindex", "-1");
-    bridgeFrame.title = "DigitalTR TEST bridge";
-    bridgeFrame.referrerPolicy = "strict-origin-when-cross-origin";
+  function createFormView(container) {
+    const root = element("div", "digitaltr-form");
+    const heading = element("h3", "digitaltr-form__title", ui.formTitle);
+    const intro = element("p", "digitaltr-form__description", ui.formIntro);
+    const requiredNote = element("p", "digitaltr-form__required-note", ui.requiredNote);
 
-    container.replaceChildren(view.root, bridgeFrame);
+    const nav = element("nav", "digitaltr-form__section-nav");
+    nav.setAttribute("aria-label", ui.sectionNav);
+    const navList = document.createElement("ol");
+    nav.appendChild(navList);
 
-    let bridgeClient = null;
-    let bridgeReady = false;
-    let lastReceipt = null;
-    let submissionInFlight = false;
-    const submissionId = getSubmissionId();
+    const form = document.createElement("form");
+    form.className = "digitaltr-form__body";
+    form.noValidate = true;
+    const errorSummary = element("div", "digitaltr-form__error-summary");
+    errorSummary.hidden = true;
+    errorSummary.tabIndex = -1;
+    errorSummary.setAttribute("role", "alert");
+    errorSummary.setAttribute("aria-labelledby", "digitaltr-error-summary-title");
+    const errorTitle = element("h4", "", ui.validationTitle);
+    errorTitle.id = "digitaltr-error-summary-title";
+    const errorList = document.createElement("ul");
+    errorSummary.append(errorTitle, errorList);
+    form.appendChild(errorSummary);
 
-    function disableSubmit() {
-      view.submitButton.disabled = true;
-    }
+    const view = {
+      container: container,
+      root: root,
+      form: form,
+      refs: new Map(),
+      sections: new Map(),
+      navList: navList,
+      errorSummary: errorSummary,
+      errorList: errorList,
+      partners: [],
+      nextPartnerNumber: 1
+    };
 
-    function enableSubmit() {
-      view.submitButton.disabled = false;
-    }
+    schema.sections.forEach(function (section) {
+      renderSection(view, section);
+    });
 
-    view.form.addEventListener("submit", async function (event) {
+    const actions = element("div", "digitaltr-form__actions");
+    const live = element("p", "digitaltr-form__live");
+    live.setAttribute("role", "status");
+    live.setAttribute("aria-live", "polite");
+    const submit = element("button", "digitaltr-form__button digitaltr-form__button--primary", ui.submit);
+    submit.type = "submit";
+    actions.append(live, submit);
+    form.appendChild(actions);
+    view.submitButton = submit;
+    view.live = live;
+
+    root.append(heading, intro, requiredNote, nav, form);
+    container.replaceChildren(root);
+
+    view.refs.forEach(function (reference) {
+      reference.controls.forEach(function (control) {
+        control.addEventListener("input", function () {
+          clearError(reference);
+          syncInHouseChoice(view.refs, control);
+          updateVisibility(view);
+        });
+        control.addEventListener("change", function () {
+          clearError(reference);
+          syncInHouseChoice(view.refs, control);
+          updateVisibility(view);
+        });
+      });
+    });
+
+    form.addEventListener("submit", async function (event) {
       event.preventDefault();
-      if (!bridgeReady || submissionInFlight) {
+      live.textContent = "";
+      updateVisibility(view);
+      const errors = validate(view);
+      showErrorSummary(view, errors);
+      if (errors.length > 0) {
+        errors[0].reference.focusTarget.focus();
         return;
       }
 
-      const validation = validatePocForm(view.form, view.refs, languageCopy);
-      if (validation.errors.length) {
-        setStatusMessage(view.status, "error", languageCopy.validationSummary);
-        validation.errors[0].focusTarget.focus();
-        return;
-      }
-
-      submissionInFlight = true;
-      disableSubmit();
-      setStatusMessage(view.status, "info", languageCopy.submitting);
-
+      submit.disabled = true;
+      submit.textContent = ui.submitting;
+      form.setAttribute("aria-busy", "true");
+      live.textContent = ui.submitting;
       try {
-        const recaptchaToken = await window.grecaptcha.execute(settings.siteKey, {
-          action: RECAPTCHA_ACTION
-        });
-        if (typeof recaptchaToken !== "string" || !recaptchaToken) {
-          const botError = new Error("Security verification failed.");
-          botError.code = "BOT_VERIFICATION_FAILED";
-          throw botError;
-        }
-
-        const response = await bridgeClient.submitSyntheticPoc({
-          submissionId: submissionId,
-          organizationLegalName: validation.values.organizationLegalName,
-          contactFullName: validation.values.contactFullName,
-          contactEmail: validation.values.contactEmail,
-          selectedServices: validation.values.selectedServices,
-          testText: validation.values.testText,
-          formLanguage: settings.formLanguage,
-          recaptchaToken: recaptchaToken
-        });
-        lastReceipt = setReceiptStatus(
-          view.status,
-          languageCopy,
-          response,
-          submissionId,
-          lastReceipt
-        );
-      } catch (error) {
-        clearFieldErrors(view.refs);
-        const marked = applyServerFieldErrors(view.refs, error && error.fieldErrors, languageCopy);
-        setStatusMessage(view.status, "error", getSafeErrorMessage(error, languageCopy));
-        if (marked.length) {
-          marked[0].focusTarget.focus();
-        } else {
-          view.status.focus({ preventScroll: true });
-        }
-      } finally {
-        submissionInFlight = false;
-        if (bridgeReady) {
-          enableSubmit();
-        }
+        const response = await adapter.submit(collectPayload(view));
+        showSuccess(view, response);
+      } catch (_error) {
+        submit.disabled = false;
+        submit.textContent = ui.submit;
+        form.removeAttribute("aria-busy");
+        live.textContent = ui.genericError;
       }
     });
 
-    try {
-      if (typeof window.DigitalTRPocBridgeClient !== "function") {
-        throw new Error("DigitalTR TEST client is unavailable.");
-      }
-
-      bridgeClient = new window.DigitalTRPocBridgeClient({
-        iframe: bridgeFrame,
-        protocolVersion: settings.protocolVersion,
-        schemaVersion: settings.schemaVersion
-      });
-      const bridgePromise = bridgeClient.start();
-      const recaptchaPromise = loadRecaptcha(settings.siteKey);
-      bridgeFrame.src = settings.bridgeUrl;
-
-      Promise.all([bridgePromise, recaptchaPromise]).then(function () {
-        bridgeReady = true;
-        enableSubmit();
-        setStatusMessage(view.status, "info", languageCopy.ready);
-      }).catch(function () {
-        bridgeReady = false;
-        disableSubmit();
-        setStatusMessage(view.status, "error", languageCopy.bridgeError);
-      });
-
-      window.addEventListener("pagehide", function () {
-        if (bridgeClient) {
-          bridgeClient.destroy();
-        }
-      }, { once: true });
-    } catch (_error) {
-      bridgeReady = false;
-      disableSubmit();
-      setStatusMessage(view.status, "error", languageCopy.bridgeError);
-    }
+    updateVisibility(view);
+    return view;
   }
 
-  function renderNormalApplication(container) {
-    const status = effectiveStatus === "closed" ? "closed" : "prelaunch";
-    container.replaceChildren(makeNotice(
-      status,
-      copy[pageLanguage][status],
-      copy[pageLanguage][status + "Body"],
-      pageLanguage,
-      true
-    ));
-  }
-
-  function renderApplicationSection() {
-    const section = document.querySelector("[data-digitaltr-application-section]");
+  function renderApplication() {
     const container = document.querySelector("[data-digitaltr-application-container]");
-
-    if (!section || !container) {
+    if (!container) {
       return;
     }
-
-    if (config && config.applicationSectionId) {
-      section.id = config.applicationSectionId;
-    }
-
-    const pocSettings = getPocSettings();
-    if (pocSettings) {
-      container.removeAttribute("aria-live");
-      renderPocForm(container, pocSettings);
+    if (!config || !schema || !adapter || schema.schemaVersion !== config.schemaVersion) {
+      const notice = element("p", "digitaltr-form digitaltr-form__alert digitaltr-form__alert--error", ui.genericError);
+      container.replaceChildren(notice);
       return;
     }
-
-    container.setAttribute("aria-live", "polite");
-    renderNormalApplication(container);
+    createFormView(container);
   }
 
-  applyTestRobotsPolicy();
-  populateConfigurationLinks();
-  populatePrimaryCtas();
-  renderApplicationSection();
+  populatePublicPage();
+  renderApplication();
 })();

@@ -45,14 +45,21 @@
   }
 
   function field(spec) {
+    const validation = Object.assign({}, spec.validation || {});
+    delete validation.minLength;
+    delete validation.maxLength;
+    delete validation.maxWords;
+    if (spec.type === "url" || spec.type === "tel") {
+      delete validation.format;
+    }
     return Object.freeze({
       fieldKey: spec.key,
       sectionKey: spec.section,
       label: tx(spec.tr, spec.en),
       help: tx(spec.helpTr || "", spec.helpEn || ""),
-      type: spec.type,
+      type: spec.type === "url" ? "text" : spec.type,
       required: Boolean(spec.required),
-      validation: Object.freeze(spec.validation || {}),
+      validation: Object.freeze(validation),
       options: Object.freeze(spec.options || []),
       serviceCode: spec.service || "COMMON",
       conditionalVisibility: Object.freeze(spec.when || { type: "always" }),
@@ -80,6 +87,7 @@
     opt("steel", "Çelik", "Steel"),
     opt("cement", "Çimento", "Cement"),
     opt("chemical-process", "Kimya / Proses Endüstrisi", "Chemicals / process industry"),
+    opt("food", "Gıda", "Food"),
     opt("other", "Diğer", "Other")
   ]);
   const PARTNER_SECTORS = Object.freeze([
@@ -87,7 +95,13 @@
     opt("automotive", "Otomotiv", "Automotive"),
     opt("electronics", "Elektronik", "Electronics"),
     opt("textile-apparel", "Tekstil / Hazır Giyim Sanayi", "Textiles / apparel"),
-    opt("medical-technologies", "Medikal Teknolojiler", "Medical technologies")
+    opt("component-manufacturing", "Bileşen Üreticisi", "Component manufacturing"),
+    opt("white-goods", "Beyaz Eşya", "White goods"),
+    opt("medical-technologies", "Medikal Teknolojiler", "Medical technologies"),
+    opt("steel", "Çelik", "Steel"),
+    opt("cement", "Çimento", "Cement"),
+    opt("chemical-process", "Kimya / Proses Endüstrisi", "Chemicals / process industry"),
+    opt("other", "Diğer", "Other")
   ]);
   const DEPARTMENTS = Object.freeze([
     opt("research-development", "Ar-Ge (Teknoloji geliştirme)", "R&D (technology development)"),
@@ -202,16 +216,16 @@
   });
 
   common("ORG_LEGAL_NAME", "organization", "Şirket adı / yasal unvan", "Company name / legal name", "text", true, { minLength: 2, maxLength: 200 }, "1.1", "string", [], null, "organization");
-  common("ORG_REGISTRATION_NUMBER", "organization", "Kayıt numarası", "Registration number", "text", true, { minLength: 2, maxLength: 100 }, "1.2", "string");
+  common("ORG_REGISTRATION_NUMBER", "organization", "Ticaret Sicil Kayıt Numarası", "Trade registry number", "text", true, { minLength: 2, maxLength: 100 }, "1.2", "string");
   common("ORG_ESTABLISHMENT_YEAR", "organization", "Kuruluş yılı", "Year established", "number", true, { min: 1800, max: 2100, step: 1 }, "1.3", "integer");
   common("ORG_ADDRESS", "organization", "Şirket adresi", "Company address", "textarea", true, { minLength: 5, maxLength: 1000 }, "1.4", "string", [], null, "street-address");
-  common("ORG_WEBSITE", "organization", "Şirket web sitesi", "Company website", "url", false, { maxLength: 500, format: "url" }, "1.5", "string", [], null, "url");
+  common("ORG_WEBSITE", "organization", "Şirket web sitesi", "Company website", "url", true, { maxLength: 500, format: "url" }, "1.5", "string", [], null, "url");
   common("CONTACT_FULL_NAME", "organization", "İletişim kişisi", "Contact person", "text", true, { minLength: 2, maxLength: 120 }, "1.6", "string", [], null, "name");
   common("CONTACT_POSITION", "organization", "Görevi / ünvanı", "Position / title", "text", true, { minLength: 2, maxLength: 160 }, "1.7", "string", [], null, "organization-title");
   common("CONTACT_EMAIL", "organization", "E-posta", "Email", "email", true, { minLength: 3, maxLength: 254, format: "email" }, "1.8", "string", [], null, "email");
   common("CONTACT_PHONE", "organization", "Telefon", "Phone", "tel", true, { minLength: 7, maxLength: 40, format: "phone" }, "1.9", "string", [], null, "tel");
   common("ORG_NACE_CODES", "organization", "NACE kodu / kodları", "NACE code(s)", "text", true, { minLength: 2, maxLength: 300 }, "1.10", "string");
-  common("ORG_SECTORS", "organization", "Faaliyet gösterilen sektörler", "Sectors of operation", "checkbox-group", true, { minSelections: 1, maxSelections: 11 }, "1.11", "string[]", SECTORS);
+  common("ORG_SECTORS", "organization", "Faaliyet gösterilen sektörler", "Sectors of operation", "checkbox-group", true, { minSelections: 1, maxSelections: 12 }, "1.11", "string[]", SECTORS);
   common("ORG_SECTOR_OTHER", "organization", "Diğer sektör", "Other sector", "text", true, { minLength: 2, maxLength: 160 }, "1.11 — Diğer", "string", [], { fieldKey: "ORG_SECTORS", contains: "other" });
 
   common("COMPANY_DESCRIPTION", "company", "Şirket hakkında kısa açıklama", "Short company description", "textarea", true, { minLength: 10, maxLength: 3000, maxWords: 300 }, "2.1", "string");
@@ -484,7 +498,7 @@
 
   [
     ["ORG_LEGAL_NAME", "Şirket adı / yasal unvan", "Company name / legal name", "4.1.1", "text", true, { minLength: 2, maxLength: 200 }, "string"],
-    ["ORG_REGISTRATION_NUMBER", "Kayıt numarası", "Registration number", "4.1.2", "text", true, { minLength: 2, maxLength: 100 }, "string"],
+    ["ORG_REGISTRATION_NUMBER", "Ticaret Sicil Kayıt Numarası", "Trade registry number", "4.1.2", "text", true, { minLength: 2, maxLength: 100 }, "string"],
     ["ORG_ESTABLISHMENT_YEAR", "Kuruluş yılı", "Year established", "4.1.3", "number", true, { min: 1800, max: 2100, step: 1 }, "integer"],
     ["ORG_ADDRESS", "Şirket adresi", "Company address", "4.1.4", "textarea", true, { minLength: 5, maxLength: 1000 }, "string"],
     ["ORG_WEBSITE", "Şirket web sitesi", "Company website", "4.1.5", "url", false, { maxLength: 500, format: "url" }, "string"],
@@ -493,7 +507,8 @@
     ["CONTACT_EMAIL", "E-posta", "Email", "4.1.8", "email", true, { minLength: 3, maxLength: 254, format: "email" }, "string"],
     ["CONTACT_PHONE", "Telefon", "Phone", "4.1.9", "tel", true, { minLength: 7, maxLength: 40, format: "phone" }, "string"],
     ["ORG_NACE_CODES", "NACE kodu / kodları", "NACE code(s)", "4.1.10", "text", true, { minLength: 2, maxLength: 300 }, "string"],
-    ["ORG_SECTORS", "Faaliyet gösterilen sektörler", "Sectors of operation", "4.1.11", "checkbox-group", true, { minSelections: 1, maxSelections: 5 }, "string[]", PARTNER_SECTORS],
+    ["ORG_SECTORS", "Faaliyet gösterilen sektörler", "Sectors of operation", "4.1.11", "checkbox-group", true, { minSelections: 1, maxSelections: 11 }, "string[]", PARTNER_SECTORS],
+    ["ORG_SECTOR_OTHER", "Diğer sektör", "Other sector", "4.1.11 — Diğer", "text", true, { minLength: 2, maxLength: 160 }, "string", null, { repeatableFieldKey: "DTR_S4_PARTNER_ORG_SECTORS", contains: "other" }],
     ["COMPANY_DESCRIPTION", "Şirket hakkında kısa açıklama", "Short company description", "4.2.1", "textarea", true, { minLength: 10, maxLength: 3000, maxWords: 300 }, "string"],
     ["COMPANY_REVENUE_2024_2025_TRY", "2024/2025 gelirleri (TL)", "2024/2025 revenue (TRY)", "4.2.2", "text", true, { minLength: 1, maxLength: 200 }, "string"],
     ["COMPANY_RD_EXPENSE_SHARE_PERCENT", "Gelirin yüzdesi olarak Ar-Ge giderleri", "R&D expenditure as a percentage of revenue", "4.2.3", "number", true, { min: 0, max: 100, step: 0.01 }, "decimal"],

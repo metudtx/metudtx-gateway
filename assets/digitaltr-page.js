@@ -8,6 +8,7 @@
   const BOT_ACTION = "not-required";
   const BOT_TOKEN = "not-required";
   const SUBMISSION_STORAGE_KEY = "metudtx.digitaltr.submissionId";
+  const POST_TIMEOUT_MS = 120000;
   const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   const APP_ID_PATTERN = /^APP-\d{4}-\d{4,6}$/;
 
@@ -22,144 +23,6 @@
     }
   }
 
-  class DigitalTRBridgeClient {
-    constructor(iframe, expectedEnvironment) {
-      if (!iframe || !iframe.contentWindow) throw new Error("A bridge iframe is required.");
-      if (expectedEnvironment !== "TEST" && expectedEnvironment !== "PRODUCTION") {
-        throw new Error("A valid bridge environment is required.");
-      }
-      this.iframe = iframe;
-      this.expectedEnvironment = expectedEnvironment;
-      this.bridgeOrigin = null;
-      this.bridgeWindow = null;
-      this.parentOrigin = global.location.origin;
-      this.sessionNonce = generateUuid();
-      this.pending = new Map();
-      this.queue = Promise.resolve();
-      this.started = false;
-      this.startPromise = null;
-      this.handshakeResolve = null;
-      this.handshakeReject = null;
-      this.discoveryTimeoutId = null;
-      this.boundMessageHandler = this.handleMessage.bind(this);
-    }
-
-    start() {
-      if (this.started) return this.startPromise || Promise.resolve(this);
-      this.started = true;
-      global.addEventListener("message", this.boundMessageHandler);
-      this.startPromise = new Promise((resolve, reject) => {
-        this.handshakeResolve = resolve;
-        this.handshakeReject = reject;
-        this.discoveryTimeoutId = global.setTimeout(() => {
-          this.destroy(new DigitalTRBridgeError({
-            code: "TEMPORARY_SERVICE_ERROR",
-            message: "DigitalTR bridge connection timed out.",
-            retryable: true
-          }));
-        }, 15000);
-      });
-      return this.startPromise;
-    }
-
-    destroy(reason) {
-      global.removeEventListener("message", this.boundMessageHandler);
-      if (this.discoveryTimeoutId !== null) global.clearTimeout(this.discoveryTimeoutId);
-      this.discoveryTimeoutId = null;
-      this.pending.forEach((entry) => {
-        global.clearTimeout(entry.timeoutId);
-        entry.reject(new Error("DigitalTR bridge client closed."));
-      });
-      this.pending.clear();
-      if (this.handshakeReject) this.handshakeReject(reason || new Error("DigitalTR bridge client closed."));
-      this.handshakeResolve = null;
-      this.handshakeReject = null;
-      this.bridgeWindow = null;
-      this.bridgeOrigin = null;
-      this.started = false;
-      this.startPromise = null;
-    }
-
-    request(messageType, payload, timeoutMs) {
-      const operation = () => this.send(messageType, payload, timeoutMs);
-      const promise = this.queue.then(operation, operation);
-      this.queue = promise.catch(() => undefined);
-      return promise;
-    }
-
-    send(messageType, payload, timeoutMs) {
-      if (!this.bridgeWindow || !this.bridgeOrigin) {
-        return Promise.reject(new Error("DigitalTR bridge is not connected."));
-      }
-      const requestId = generateUuid();
-      const envelope = {
-        channel: CHANNEL,
-        protocolVersion: PROTOCOL_VERSION,
-        messageType: messageType,
-        requestId: requestId,
-        sessionNonce: this.sessionNonce,
-        payload: payload
-      };
-      return new Promise((resolve, reject) => {
-        const timeoutId = global.setTimeout(() => {
-          this.pending.delete(requestId);
-          reject(new DigitalTRBridgeError({
-            code: "TEMPORARY_SERVICE_ERROR",
-            message: "DigitalTR bridge response timed out.",
-            retryable: true
-          }));
-        }, timeoutMs || 60000);
-        this.pending.set(requestId, { resolve: resolve, reject: reject, timeoutId: timeoutId });
-        this.bridgeWindow.postMessage(envelope, this.bridgeOrigin);
-      });
-    }
-
-    handleMessage(event) {
-      const envelope = event.data;
-      if (!isValidEnvelope(envelope)) return;
-      if (envelope.messageType === "BRIDGE_READY") {
-        this.handleReady(event, envelope);
-        return;
-      }
-      if (event.source !== this.bridgeWindow || event.origin !== this.bridgeOrigin ||
-          envelope.sessionNonce !== this.sessionNonce) return;
-      const pending = this.pending.get(envelope.requestId);
-      if (!pending) return;
-      this.pending.delete(envelope.requestId);
-      global.clearTimeout(pending.timeoutId);
-      if (envelope.messageType === "ERROR") pending.reject(new DigitalTRBridgeError(envelope.payload));
-      else pending.resolve(envelope.payload);
-    }
-
-    handleReady(event, envelope) {
-      if (this.bridgeWindow || !this.started || !isTrustedBridgeOrigin(event.origin) ||
-          envelope.sessionNonce !== this.sessionNonce ||
-          !hasExactKeys(envelope.payload, ["environment", "ok", "schemaVersion"]) ||
-          envelope.payload.ok !== true || envelope.payload.environment !== this.expectedEnvironment ||
-          envelope.payload.schemaVersion !== SCHEMA_VERSION) return;
-      this.bridgeWindow = event.source;
-      this.bridgeOrigin = event.origin;
-      if (this.discoveryTimeoutId !== null) global.clearTimeout(this.discoveryTimeoutId);
-      this.discoveryTimeoutId = null;
-      this.send("INIT", {
-        schemaVersion: SCHEMA_VERSION,
-        parentOrigin: this.parentOrigin
-      }, 15000).then((acknowledgement) => {
-        if (!hasExactKeys(acknowledgement, ["environment", "ok", "schemaVersion"]) ||
-            acknowledgement.ok !== true || acknowledgement.environment !== this.expectedEnvironment ||
-            acknowledgement.schemaVersion !== SCHEMA_VERSION) {
-          throw new Error("DigitalTR bridge acknowledgement is invalid.");
-        }
-        const resolve = this.handshakeResolve;
-        this.handshakeResolve = null;
-        this.handshakeReject = null;
-        this.startPromise = Promise.resolve(this);
-        if (resolve) resolve(this);
-      }).catch((error) => this.destroy(error));
-    }
-  }
-
-  let runtimePromise = null;
   let submissionInFlight = false;
 
   function settings() {
@@ -179,41 +42,93 @@
     };
   }
 
-  function getRuntime() {
-    if (runtimePromise) return runtimePromise;
-    runtimePromise = (async function () {
-      const config = settings();
-      const iframe = document.createElement("iframe");
-      iframe.id = "digitaltr-intake-bridge";
-      iframe.hidden = true;
-      iframe.setAttribute("hidden", "");
-      iframe.setAttribute("aria-hidden", "true");
-      iframe.setAttribute("tabindex", "-1");
-      iframe.title = "DigitalTR intake bridge";
-      iframe.referrerPolicy = "strict-origin-when-cross-origin";
-      document.body.appendChild(iframe);
+  function postSubmission(payload) {
+    const config = settings();
+    const requestId = generateUuid();
+    const sessionNonce = generateUuid();
+    const frameName = "digitaltr-intake-post-" + sessionNonce;
+    const iframe = document.createElement("iframe");
+    iframe.id = "digitaltr-intake-post";
+    iframe.name = frameName;
+    iframe.title = "DigitalTR intake response";
+    iframe.setAttribute("aria-hidden", "true");
+    iframe.setAttribute("tabindex", "-1");
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+    iframe.style.position = "absolute";
+    iframe.style.width = "1px";
+    iframe.style.height = "1px";
+    iframe.style.border = "0";
+    iframe.style.opacity = "0";
+    iframe.style.pointerEvents = "none";
+    document.body.appendChild(iframe);
 
-      const client = new DigitalTRBridgeClient(iframe, config.environment);
-      const bridgeUrl = new URL(config.bridgeUrl);
-      bridgeUrl.searchParams.set("sessionNonce", client.sessionNonce);
-      const bridgeReady = client.start();
-      iframe.src = bridgeUrl.href;
-      try {
-        await bridgeReady;
-      } catch (error) {
-        client.destroy(error);
+    return new Promise(function (resolve, reject) {
+      let timeoutId = null;
+      let settled = false;
+
+      function cleanup() {
+        global.removeEventListener("message", handleMessage);
+        if (timeoutId !== null) global.clearTimeout(timeoutId);
+        timeoutId = null;
         iframe.remove();
-        throw error;
       }
-      global.addEventListener("pagehide", function () {
-        client.destroy();
-      }, { once: true });
-      return { client: client };
-    })().catch(function (error) {
-      runtimePromise = null;
-      throw error;
+
+      function finish(callback, value) {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        callback(value);
+      }
+
+      function handleMessage(event) {
+        const envelope = event.data;
+        if (!isValidEnvelope(envelope) || !isTrustedBridgeOrigin(event.origin) ||
+            envelope.requestId !== requestId || envelope.sessionNonce !== sessionNonce ||
+            (envelope.messageType !== "SUBMISSION_SUCCESS" && envelope.messageType !== "ERROR")) return;
+        if (envelope.messageType === "ERROR") {
+          finish(reject, new DigitalTRBridgeError(envelope.payload));
+          return;
+        }
+        finish(resolve, envelope.payload);
+      }
+
+      global.addEventListener("message", handleMessage);
+      timeoutId = global.setTimeout(function () {
+        finish(reject, new DigitalTRBridgeError({
+          code: "TEMPORARY_SERVICE_ERROR",
+          message: "DigitalTR submission response timed out.",
+          retryable: true
+        }));
+      }, POST_TIMEOUT_MS);
+
+      const form = document.createElement("form");
+      const input = document.createElement("input");
+      form.method = "post";
+      form.action = config.bridgeUrl;
+      form.target = frameName;
+      form.enctype = "application/x-www-form-urlencoded";
+      form.style.display = "none";
+      input.type = "hidden";
+      input.name = "requestJson";
+      input.value = JSON.stringify({
+        channel: CHANNEL,
+        protocolVersion: PROTOCOL_VERSION,
+        messageType: "SUBMISSION_COMMIT",
+        requestId: requestId,
+        sessionNonce: sessionNonce,
+        parentOrigin: global.location.origin,
+        payload: payload
+      });
+      form.appendChild(input);
+      document.body.appendChild(form);
+      try {
+        form.submit();
+      } catch (error) {
+        finish(reject, error);
+      } finally {
+        form.remove();
+      }
     });
-    return runtimePromise;
   }
 
   async function submit(payload) {
@@ -221,7 +136,6 @@
     validatePublicPayload(payload);
     submissionInFlight = true;
     try {
-      const runtime = await getRuntime();
       const submissionId = getSubmissionId();
       const submission = {
         protocolVersion: PROTOCOL_VERSION,
@@ -238,8 +152,9 @@
           token: BOT_TOKEN
         }
       };
-      const response = await runtime.client.request("SUBMISSION_COMMIT", { submission: submission }, 300000);
-      if (!response || response.ok !== true || !APP_ID_PATTERN.test(response.appId) ||
+      const response = await postSubmission({ submission: submission });
+      if (!response || response.ok !== true || response.environment !== settings().environment ||
+          response.schemaVersion !== SCHEMA_VERSION || !APP_ID_PATTERN.test(response.appId) ||
           typeof response.receivedAt !== "string" || !Array.isArray(response.selectedServices)) {
         throw new DigitalTRBridgeError({
           code: "TEMPORARY_SERVICE_ERROR",
@@ -379,6 +294,7 @@
       inHouseError: "En az bir oran girin veya şirket içinde geliştirme olmadığını belirtin.",
       backendFieldError: "Bu alan backend doğrulamasından geçmedi.",
       genericError: "Başvuru gönderilemedi. Lütfen yeniden deneyin.",
+      errorCode: "Hata kodu",
       successTitle: "Başvurunuz alındı",
       successBody: "Başvurunuz başarıyla alınmıştır.",
       appId: "APP ID",
@@ -414,6 +330,7 @@
       inHouseError: "Enter at least one percentage or state that there is no in-house development.",
       backendFieldError: "This field did not pass backend validation.",
       genericError: "The application could not be submitted. Please try again.",
+      errorCode: "Error code",
       successTitle: "Application received",
       successBody: "Your application has been received successfully.",
       appId: "APP ID",
@@ -1331,7 +1248,10 @@
           showErrorSummary(view, backendErrors);
           backendErrors[0].reference.focusTarget.focus();
         }
-        live.textContent = ui.genericError;
+        const safeCode = _error && typeof _error.code === "string" && /^[A-Z0-9_]{3,80}$/.test(_error.code)
+          ? " " + ui.errorCode + ": " + _error.code + "."
+          : "";
+        live.textContent = ui.genericError + safeCode;
       }
     });
 

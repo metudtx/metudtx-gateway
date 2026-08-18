@@ -3,10 +3,10 @@
 
   const digitaltr = Object.freeze({
     status: "open",
-    environment: "TEST",
+    environment: "PRODUCTION",
     protocolVersion: "0.1",
-    schemaVersion: "0.3-preview",
-    appsScriptBridgeUrl: "https://script.google.com/macros/s/AKfycbwJQHlAZ3yu2rKBy40Lth6wRLGsw637UGo5mk-47kx538EdBqPyxoWQz16Hh9B3pWI4/exec",
+    schemaVersion: "1.0",
+    appsScriptBridgeUrl: "https://script.google.com/macros/s/AKfycbwaOJnEvAnp9LOydEqUmFHruF0ie00q5BI7crSXgpETxndl-8MOTEP0Aysx7AQ_0NMD/exec",
     recaptchaSiteKey: "6LcZcYItAAAAACPoSrplnUZMsy8lNpZojLihjWZH",
     contactEmail: "digitaltr@metudtx.com",
     windowStart: "2026-07-03",

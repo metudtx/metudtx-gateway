@@ -1,7 +1,7 @@
 (function (global) {
   "use strict";
 
-  const VERSION = "0.3-preview";
+  const VERSION = "1.0";
   const TEMPLATES = Object.freeze({
     S1: Object.freeze({ id: "1eSwVu8TlmSa_ncixYturKjCWC2QrO9xL", title: "DIGITALTR-Başvuru Formu 1_Dijital Olgunluk Analizi.docx" }),
     S2: Object.freeze({ id: "1aZUkS4HKxZsQPt_-w_ofOFskROUbGpOG", title: "DIGITALTR-Başvuru Formu 2_Dijital Dönüşüm Danışmanlığı Hizmeti.docx" }),

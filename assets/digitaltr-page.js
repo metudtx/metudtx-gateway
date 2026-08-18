@@ -3,7 +3,7 @@
 
   const CHANNEL = "METUDTX_DIGITALTR_BRIDGE";
   const PROTOCOL_VERSION = "0.1";
-  const SCHEMA_VERSION = "0.3-preview";
+  const SCHEMA_VERSION = "1.0";
   const RECAPTCHA_ACTION = "digitaltr_intake_submit";
   const SUBMISSION_STORAGE_KEY = "metudtx.digitaltr.submissionId";
   const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -21,9 +21,13 @@
   }
 
   class DigitalTRBridgeClient {
-    constructor(iframe) {
+    constructor(iframe, expectedEnvironment) {
       if (!iframe || !iframe.contentWindow) throw new Error("A bridge iframe is required.");
+      if (expectedEnvironment !== "TEST" && expectedEnvironment !== "PRODUCTION") {
+        throw new Error("A valid bridge environment is required.");
+      }
       this.iframe = iframe;
+      this.expectedEnvironment = expectedEnvironment;
       this.bridgeOrigin = null;
       this.bridgeWindow = null;
       this.parentOrigin = global.location.origin;
@@ -129,7 +133,7 @@
       if (this.bridgeWindow || !this.started || !isTrustedBridgeOrigin(event.origin) ||
           envelope.sessionNonce !== this.sessionNonce ||
           !hasExactKeys(envelope.payload, ["environment", "ok", "schemaVersion"]) ||
-          envelope.payload.ok !== true || envelope.payload.environment !== "TEST" ||
+          envelope.payload.ok !== true || envelope.payload.environment !== this.expectedEnvironment ||
           envelope.payload.schemaVersion !== SCHEMA_VERSION) return;
       this.bridgeWindow = event.source;
       this.bridgeOrigin = event.origin;
@@ -138,7 +142,12 @@
       this.send("INIT", {
         schemaVersion: SCHEMA_VERSION,
         parentOrigin: this.parentOrigin
-      }, 15000).then(() => {
+      }, 15000).then((acknowledgement) => {
+        if (!hasExactKeys(acknowledgement, ["environment", "ok", "schemaVersion"]) ||
+            acknowledgement.ok !== true || acknowledgement.environment !== this.expectedEnvironment ||
+            acknowledgement.schemaVersion !== SCHEMA_VERSION) {
+          throw new Error("DigitalTR bridge acknowledgement is invalid.");
+        }
         const resolve = this.handshakeResolve;
         this.handshakeResolve = null;
         this.handshakeReject = null;
@@ -154,6 +163,7 @@
   function settings() {
     const config = global.METUDTX_CONFIG && global.METUDTX_CONFIG.digitaltr;
     if (!config || config.schemaVersion !== SCHEMA_VERSION || config.protocolVersion !== PROTOCOL_VERSION ||
+        (config.environment !== "TEST" && config.environment !== "PRODUCTION") ||
         typeof config.appsScriptBridgeUrl !== "string" || typeof config.recaptchaSiteKey !== "string") {
       throw new Error("DigitalTR backend configuration is unavailable.");
     }
@@ -163,7 +173,8 @@
     }
     return {
       bridgeUrl: bridgeUrl.href,
-      siteKey: config.recaptchaSiteKey.trim()
+      siteKey: config.recaptchaSiteKey.trim(),
+      environment: config.environment
     };
   }
 
@@ -181,7 +192,7 @@
       iframe.referrerPolicy = "strict-origin-when-cross-origin";
       document.body.appendChild(iframe);
 
-      const client = new DigitalTRBridgeClient(iframe);
+      const client = new DigitalTRBridgeClient(iframe, config.environment);
       const bridgeUrl = new URL(config.bridgeUrl);
       bridgeUrl.searchParams.set("sessionNonce", client.sessionNonce);
       const bridgeReady = client.start();

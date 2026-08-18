@@ -33,7 +33,7 @@
       this.bridgeOrigin = null;
       this.bridgeWindow = null;
       this.parentOrigin = global.location.origin;
-      this.sessionNonce = global.crypto.randomUUID();
+      this.sessionNonce = generateUuid();
       this.pending = new Map();
       this.queue = Promise.resolve();
       this.started = false;
@@ -91,7 +91,7 @@
       if (!this.bridgeWindow || !this.bridgeOrigin) {
         return Promise.reject(new Error("DigitalTR bridge is not connected."));
       }
-      const requestId = global.crypto.randomUUID();
+      const requestId = generateUuid();
       const envelope = {
         channel: CHANNEL,
         protocolVersion: PROTOCOL_VERSION,
@@ -272,13 +272,36 @@
     let value = null;
     try { value = global.sessionStorage.getItem(SUBMISSION_STORAGE_KEY); } catch (_error) {}
     if (UUID_PATTERN.test(value || "")) return value;
-    value = global.crypto.randomUUID();
+    value = generateUuid();
     try { global.sessionStorage.setItem(SUBMISSION_STORAGE_KEY, value); } catch (_error) {}
     return value;
   }
 
   function clearSubmissionId() {
     try { global.sessionStorage.removeItem(SUBMISSION_STORAGE_KEY); } catch (_error) {}
+  }
+
+  function generateUuid() {
+    if (global.crypto && typeof global.crypto.randomUUID === "function") {
+      return global.crypto.randomUUID();
+    }
+    if (!global.crypto || typeof global.crypto.getRandomValues !== "function") {
+      throw new Error("Secure UUID generation is unavailable.");
+    }
+    const bytes = new Uint8Array(16);
+    global.crypto.getRandomValues(bytes);
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const hex = Array.from(bytes, function (byte) {
+      return ("0" + byte.toString(16)).slice(-2);
+    }).join("");
+    return [
+      hex.slice(0, 8),
+      hex.slice(8, 12),
+      hex.slice(12, 16),
+      hex.slice(16, 20),
+      hex.slice(20)
+    ].join("-");
   }
 
   function isValidEnvelope(value) {

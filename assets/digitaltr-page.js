@@ -4,7 +4,9 @@
   const CHANNEL = "METUDTX_DIGITALTR_BRIDGE";
   const PROTOCOL_VERSION = "0.1";
   const SCHEMA_VERSION = "1.0";
-  const RECAPTCHA_ACTION = "digitaltr_intake_submit";
+  const BOT_PROVIDER = "none";
+  const BOT_ACTION = "not-required";
+  const BOT_TOKEN = "not-required";
   const SUBMISSION_STORAGE_KEY = "metudtx.digitaltr.submissionId";
   const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   const APP_ID_PATTERN = /^APP-\d{4}-\d{4,6}$/;
@@ -164,7 +166,7 @@
     const config = global.METUDTX_CONFIG && global.METUDTX_CONFIG.digitaltr;
     if (!config || config.schemaVersion !== SCHEMA_VERSION || config.protocolVersion !== PROTOCOL_VERSION ||
         (config.environment !== "TEST" && config.environment !== "PRODUCTION") ||
-        typeof config.appsScriptBridgeUrl !== "string" || typeof config.recaptchaSiteKey !== "string") {
+        typeof config.appsScriptBridgeUrl !== "string") {
       throw new Error("DigitalTR backend configuration is unavailable.");
     }
     const bridgeUrl = new URL(config.appsScriptBridgeUrl);
@@ -173,7 +175,6 @@
     }
     return {
       bridgeUrl: bridgeUrl.href,
-      siteKey: config.recaptchaSiteKey.trim(),
       environment: config.environment
     };
   }
@@ -196,10 +197,9 @@
       const bridgeUrl = new URL(config.bridgeUrl);
       bridgeUrl.searchParams.set("sessionNonce", client.sessionNonce);
       const bridgeReady = client.start();
-      const recaptchaReady = loadRecaptcha(config.siteKey);
       iframe.src = bridgeUrl.href;
       try {
-        await Promise.all([bridgeReady, recaptchaReady]);
+        await bridgeReady;
       } catch (error) {
         client.destroy(error);
         iframe.remove();
@@ -208,7 +208,7 @@
       global.addEventListener("pagehide", function () {
         client.destroy();
       }, { once: true });
-      return { client: client, siteKey: config.siteKey };
+      return { client: client };
     })().catch(function (error) {
       runtimePromise = null;
       throw error;
@@ -222,14 +222,6 @@
     submissionInFlight = true;
     try {
       const runtime = await getRuntime();
-      const token = await global.grecaptcha.execute(runtime.siteKey, { action: RECAPTCHA_ACTION });
-      if (typeof token !== "string" || !token) {
-        throw new DigitalTRBridgeError({
-          code: "BOT_VERIFICATION_FAILED",
-          message: "Security verification failed.",
-          retryable: false
-        });
-      }
       const submissionId = getSubmissionId();
       const submission = {
         protocolVersion: PROTOCOL_VERSION,
@@ -241,9 +233,9 @@
         answers: cloneJson(payload.answers),
         partners: cloneJson(payload.partners),
         bot: {
-          provider: "recaptcha-v3",
-          action: RECAPTCHA_ACTION,
-          token: token
+          provider: BOT_PROVIDER,
+          action: BOT_ACTION,
+          token: BOT_TOKEN
         }
       };
       const response = await runtime.client.request("SUBMISSION_COMMIT", { submission: submission }, 300000);
@@ -287,37 +279,6 @@
 
   function clearSubmissionId() {
     try { global.sessionStorage.removeItem(SUBMISSION_STORAGE_KEY); } catch (_error) {}
-  }
-
-  function loadRecaptcha(siteKey) {
-    if (global.grecaptcha) return waitForRecaptchaReady();
-    return new Promise(function (resolve, reject) {
-      const existing = document.querySelector("script[data-digitaltr-recaptcha]");
-      if (existing) {
-        existing.addEventListener("load", function () { waitForRecaptchaReady().then(resolve, reject); }, { once: true });
-        existing.addEventListener("error", reject, { once: true });
-        return;
-      }
-      const script = document.createElement("script");
-      script.src = "https://www.google.com/recaptcha/api.js?render=" + encodeURIComponent(siteKey);
-      script.async = true;
-      script.defer = true;
-      script.dataset.digitaltrRecaptcha = "true";
-      script.addEventListener("load", function () { waitForRecaptchaReady().then(resolve, reject); }, { once: true });
-      script.addEventListener("error", function () { reject(new Error("reCAPTCHA could not be loaded.")); }, { once: true });
-      document.head.appendChild(script);
-    });
-  }
-
-  function waitForRecaptchaReady() {
-    return new Promise(function (resolve, reject) {
-      if (!global.grecaptcha || typeof global.grecaptcha.ready !== "function" ||
-          typeof global.grecaptcha.execute !== "function") {
-        reject(new Error("reCAPTCHA is unavailable."));
-        return;
-      }
-      global.grecaptcha.ready(resolve);
-    });
   }
 
   function isValidEnvelope(value) {

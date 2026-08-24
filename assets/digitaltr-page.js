@@ -280,7 +280,8 @@
       removePartner: "Ortağı kaldır",
       partnerTitle: "Ek proje ortağı",
       submit: "Başvuruyu Gönder",
-      submitting: "Başvurunuz gönderiliyor.",
+      submitting: "Başvurunuz gönderiliyor…",
+      submissionWait: "Lütfen sonuç bildirimi görünene kadar bu sayfayı kapatmayın veya yenilemeyin.",
       validationTitle: "Başvuruyu göndermeden önce aşağıdaki alanları düzeltin:",
       requiredError: "Bu alan zorunludur.",
       selectionError: "En az bir seçenek belirleyin.",
@@ -316,7 +317,8 @@
       removePartner: "Remove partner",
       partnerTitle: "Additional project partner",
       submit: "Submit Application",
-      submitting: "Your application is being submitted.",
+      submitting: "Your application is being submitted…",
+      submissionWait: "Please keep this page open and do not refresh it until the confirmation appears.",
       validationTitle: "Correct the following fields before submitting the application:",
       requiredError: "This field is required.",
       selectionError: "Select at least one option.",
@@ -1235,7 +1237,7 @@
       submit.disabled = true;
       submit.textContent = ui.submitting;
       form.setAttribute("aria-busy", "true");
-      live.textContent = ui.submitting;
+      live.textContent = ui.submitting + " " + ui.submissionWait;
       try {
         const response = await adapter.submit(collectPayload(view));
         showSuccess(view, response);

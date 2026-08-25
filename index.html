@@ -116,6 +116,43 @@
 
     nav a:hover { color: var(--teal-dark); }
 
+    nav details { position: relative; }
+
+    nav summary {
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.94rem;
+      font-weight: 780;
+    }
+
+    nav summary:hover,
+    nav details[open] > summary { color: var(--teal-dark); }
+
+    .nav-programs-panel {
+      position: absolute;
+      z-index: 20;
+      top: calc(100% + 12px);
+      left: 50%;
+      width: 230px;
+      padding: 9px;
+      transform: translateX(-50%);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.98);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .nav-programs-panel a {
+      display: block;
+      padding: 11px 12px;
+      border-radius: 12px;
+      color: var(--ink);
+      font-size: 0.9rem;
+    }
+
+    .nav-programs-panel a:hover,
+    .nav-programs-panel a:focus-visible { background: var(--soft-teal); }
+
     nav a.nav-cta {
       color: #fff;
       background: var(--teal);
@@ -646,6 +683,13 @@
 
       nav { justify-content: flex-start; gap: 12px; }
       nav a.nav-cta { padding: 9px 13px; }
+      nav details { position: static; }
+      .nav-programs-panel {
+        position: static;
+        width: min(100%, 280px);
+        margin-top: 10px;
+        transform: none;
+      }
 
       .hero {
         min-height: auto;
@@ -674,15 +718,19 @@
       </a>
       <nav aria-label="Main navigation">
         <a href="https://portal.metudtx.com">Platform</a>
-        <a href="https://ai4gtech.metudtx.com">AI4GTech</a>
-        <a href="/apply/digitaltr/">DIGITALTR Application</a>
-        <a href="https://dtx.metu.edu.tr">Main Website</a>
-        <a href="mailto:info@metudtx.com">Contact</a>
+        <details>
+          <summary>Programs</summary>
+          <div class="nav-programs-panel">
+            <a href="/apply/digitaltr/">DigitalTR</a>
+            <a href="https://ai4gtech.metudtx.com">AI4GTech Anatolia</a>
+          </div>
+        </details>
+        <a href="https://dtx.metu.edu.tr">About the Centre</a>
         <span class="lang-switch" aria-label="Language selection">
           <a class="active" href="/" hreflang="en" lang="en" aria-current="page">EN</a>
           <a href="/tr/" hreflang="tr" lang="tr">TR</a>
         </span>
-        <a class="nav-cta" href="https://portal.metudtx.com">Start Assessment</a>
+        <a class="nav-cta" href="/apply/">Applications</a>
       </nav>
     </header>
 
@@ -694,9 +742,9 @@
           METU DTX connects companies with digital maturity assessment, evidence-based roadmapping, test-before-invest infrastructure, AI and green transformation services, and implementation support.
         </p>
         <div class="hero-actions">
-          <a class="button primary" href="https://portal.metudtx.com">Start Digital Maturity Assessment</a>
-          <a class="button secondary" href="https://ai4gtech.metudtx.com">Explore AI4GTech Anatolia</a>
-          <a class="button ghost" href="/apply/digitaltr/">Apply to DIGITALTR</a>
+          <a class="button primary" href="/apply/">View application paths</a>
+          <a class="button secondary" href="/apply/digitaltr/">Digital transformation services</a>
+          <a class="button ghost" href="https://ai4gtech.metudtx.com">AI, green and skills services</a>
         </div>
       </div>
 
@@ -753,10 +801,10 @@
 
       <div class="routes">
         <a class="route-card primary-route" href="https://portal.metudtx.com">
-          <span class="route-kicker">Primary route</span>
+          <span class="route-kicker">Operational infrastructure</span>
           <h3>METU DTX Digital Transformation Platform</h3>
-          <p>Start company registration, self-assessment and the structured digital maturity assessment journey. This is the operational entry point for companies.</p>
-          <span class="route-link">Open platform landing</span>
+          <p>Access the company workspace, self-assessment and expert-led digital maturity assessment tools.</p>
+          <span class="route-link">Open the platform</span>
         </a>
 
         <a class="route-card" href="https://ai4gtech.metudtx.com">
@@ -843,12 +891,12 @@
     </section>
 
     <section class="cta">
-      <h2>Start with the platform.</h2>
+      <h2>Find the right application path.</h2>
       <p>
-        Companies should begin through the METU DTX Digital Transformation Platform. From there, assessment outputs can connect to roadmap preparation, test-before-invest, AI4GTech Anatolia services and implementation pathways.
+        Choose a service path based on your company’s scale and transformation priorities. METU DTX directs each need to the relevant assessment, consulting, validation or capability development service.
       </p>
       <div class="cta-actions">
-        <a class="button primary" href="https://portal.metudtx.com">Go to Platform</a>
+        <a class="button primary" href="/apply/">Applications</a>
         <a class="button secondary" href="mailto:info@metudtx.com">Contact METU DTX</a>
       </div>
     </section>

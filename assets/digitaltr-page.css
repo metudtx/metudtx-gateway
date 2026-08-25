@@ -198,6 +198,24 @@ a.nav-cta:hover {
   color: #fff;
 }
 
+nav > a.nav-contact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 9px 15px;
+  border: 1px solid rgba(15, 118, 110, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--teal-dark);
+}
+
+nav > a.nav-contact:hover {
+  border-color: var(--teal);
+  background: var(--soft-teal);
+  color: var(--teal-dark);
+}
+
 .nav-cta--inactive {
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.76);

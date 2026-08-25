@@ -40,6 +40,7 @@ a {
 }
 
 a:focus-visible,
+iframe:focus-visible,
 summary:focus-visible {
   outline: 3px solid rgba(36, 60, 122, 0.62);
   outline-offset: 4px;
@@ -195,6 +196,24 @@ summary:focus-visible {
 .main-nav > .nav-cta:hover {
   background: var(--teal-dark);
   color: #fff;
+}
+
+.main-nav > .nav-contact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 9px 15px;
+  border: 1px solid rgba(15, 118, 110, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--teal-dark);
+}
+
+.main-nav > .nav-contact:hover {
+  border-color: var(--teal);
+  background: var(--soft-teal);
+  color: var(--teal-dark);
 }
 
 .hero {
@@ -582,6 +601,122 @@ h3 {
   color: var(--teal-dark);
 }
 
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1.22fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.contact-details-card {
+  height: 100%;
+  border-top: 8px solid var(--teal);
+}
+
+.contact-details-card h2 {
+  font-size: clamp(1.8rem, 3vw, 2.7rem);
+}
+
+.contact-list {
+  display: grid;
+  gap: 24px;
+  margin: 28px 0 0;
+}
+
+.contact-list > div {
+  display: grid;
+  gap: 7px;
+}
+
+.contact-list dt {
+  color: var(--teal);
+  font-size: 0.75rem;
+  font-weight: 860;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.contact-list dd {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.contact-list address {
+  font-style: normal;
+}
+
+.contact-list a {
+  color: var(--teal-dark);
+  font-weight: 780;
+  text-decoration: none;
+}
+
+.embed-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+}
+
+.embed-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px 30px 18px;
+}
+
+.embed-card-heading h2 {
+  margin: 0;
+  font-size: clamp(1.55rem, 2.5vw, 2.2rem);
+}
+
+.embed-card-heading a,
+.embed-fallback a {
+  color: var(--teal-dark);
+  font-weight: 780;
+}
+
+.map-embed {
+  min-height: 360px;
+  aspect-ratio: 4 / 3;
+}
+
+.map-embed iframe,
+.appointment-embed iframe {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  border: 0;
+}
+
+.map-embed iframe:focus-visible,
+.appointment-embed iframe:focus-visible {
+  outline-offset: -4px;
+}
+
+.map-embed iframe {
+  height: 100%;
+}
+
+.booking-card {
+  padding: 20px;
+}
+
+.appointment-embed iframe {
+  height: 650px;
+}
+
+.embed-fallback {
+  margin: 14px 4px 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
 footer {
   display: flex;
   justify-content: space-between;
@@ -612,6 +747,10 @@ footer a {
 
   .wide-card,
   .featured-service {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-grid {
     grid-template-columns: 1fr;
   }
 
@@ -690,5 +829,28 @@ footer a {
   .program-card,
   .service-card {
     min-height: 0;
+  }
+
+  .embed-card {
+    border-radius: 24px;
+  }
+
+  .embed-card-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 24px 22px 16px;
+  }
+
+  .map-embed {
+    min-height: 280px;
+    aspect-ratio: 1 / 1;
+  }
+
+  .booking-card {
+    padding: 10px;
+  }
+
+  .appointment-embed iframe {
+    height: 720px;
   }
 }

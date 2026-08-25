@@ -19,7 +19,7 @@
   <meta property="og:url" content="https://metudtx.com/tr/basvur/midcap/dogrudan/">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="stylesheet" href="/assets/digitaltr-page.css?v=1.0.5-midcap-routes">
+  <link rel="stylesheet" href="/assets/digitaltr-page.css?v=1.0.6-main-nav">
   <link rel="stylesheet" href="/assets/digitaltr-form-theme.css">
   <script defer src="/assets/digitaltr-config.js?v=1.0.5-midcap-routes"></script>
   <script defer src="/assets/digitaltr-intake-schema.js?v=1.0.3"></script>
@@ -64,15 +64,21 @@
       <a class="brand" href="/tr/" aria-label="METU DTX ana sayfa">
         <img class="brand-logo" src="/metu-dtx-logo.png" alt="METU DTX Dijital Dönüşüm ve İnovasyon Merkezi">
       </a>
-      <nav aria-label="Ana navigasyon">
+      <nav class="main-nav" aria-label="Ana navigasyon">
         <a href="https://portal.metudtx.com/tr/">Platform</a>
-        <a href="https://ai4gtech.metudtx.com/tr/">AI4GTech</a>
-        <a href="https://dtx.metu.edu.tr">Merkez</a>
-        <span data-contact-link data-contact-text="email"></span>
+        <details class="nav-programs">
+          <summary>Programlar</summary>
+          <div class="nav-programs-panel">
+            <a href="/tr/basvur/midcap/">Orta Ölçekli İşletmeler</a>
+            <a href="https://ai4gtech.metudtx.com/tr/">AI4GTech Anatolia</a>
+          </div>
+        </details>
+        <a href="https://dtx.metu.edu.tr">Merkez Hakkında</a>
         <span class="lang-switch" role="group" aria-label="Dil seçimi">
           <a href="/apply/midcap/direct/" hreflang="en" lang="en">EN</a>
           <a class="active" href="/tr/basvur/midcap/dogrudan/" hreflang="tr" lang="tr" aria-current="page">TR</a>
         </span>
+        <a class="nav-cta" href="/tr/basvur/">Başvurular</a>
       </nav>
     </header>
 

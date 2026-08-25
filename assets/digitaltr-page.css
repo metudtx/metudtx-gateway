@@ -44,7 +44,8 @@ a {
 
 a:focus-visible,
 button:focus-visible,
-iframe:focus-visible {
+iframe:focus-visible,
+summary:focus-visible {
   outline: 3px solid rgba(36, 60, 122, 0.62);
   outline-offset: 4px;
 }
@@ -112,6 +113,52 @@ nav > span:not(.lang-switch):not([data-digitaltr-primary-cta]) {
 }
 
 nav > a:hover {
+  color: var(--teal-dark);
+}
+
+nav details {
+  position: relative;
+}
+
+nav summary {
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.94rem;
+  font-weight: 780;
+}
+
+nav summary:hover,
+nav details[open] > summary {
+  color: var(--teal-dark);
+}
+
+.nav-programs-panel {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 12px);
+  left: 50%;
+  width: 250px;
+  transform: translateX(-50%);
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: var(--shadow-soft);
+}
+
+.nav-programs-panel a {
+  display: block;
+  padding: 11px 12px;
+  border-radius: 12px;
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 740;
+  text-decoration: none;
+}
+
+.nav-programs-panel a:hover,
+.nav-programs-panel a:focus-visible {
+  background: var(--soft-teal);
   color: var(--teal-dark);
 }
 
@@ -919,6 +966,17 @@ footer a {
   nav {
     justify-content: flex-start;
     gap: 12px;
+  }
+
+  nav details {
+    position: static;
+  }
+
+  .nav-programs-panel {
+    position: static;
+    width: min(100%, 300px);
+    margin-top: 10px;
+    transform: none;
   }
 
   .nav-cta {

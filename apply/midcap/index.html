@@ -19,7 +19,7 @@
   <meta property="og:url" content="https://metudtx.com/apply/midcap/">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="stylesheet" href="/assets/digitaltr-page.css?v=1.0.5-midcap-routes">
+  <link rel="stylesheet" href="/assets/digitaltr-page.css?v=1.0.6-main-nav">
   <link rel="stylesheet" href="/assets/digitaltr-form-theme.css">
   <script defer src="/assets/digitaltr-config.js?v=1.0.5-midcap-routes"></script>
   <script defer src="/assets/digitaltr-intake-schema.js?v=1.0.3"></script>
@@ -64,15 +64,21 @@
       <a class="brand" href="/" aria-label="METU DTX home">
         <img class="brand-logo" src="/metu-dtx-logo.png" alt="METU DTX Digital Transformation and Innovation Center">
       </a>
-      <nav aria-label="Main navigation">
+      <nav class="main-nav" aria-label="Main navigation">
         <a href="https://portal.metudtx.com">Platform</a>
-        <a href="https://ai4gtech.metudtx.com">AI4GTech</a>
-        <a href="https://dtx.metu.edu.tr">Center</a>
-        <span data-contact-link data-contact-text="email"></span>
+        <details class="nav-programs">
+          <summary>Programs</summary>
+          <div class="nav-programs-panel">
+            <a href="/apply/midcap/">Mid-sized Businesses</a>
+            <a href="https://ai4gtech.metudtx.com">AI4GTech Anatolia</a>
+          </div>
+        </details>
+        <a href="https://dtx.metu.edu.tr">About the Centre</a>
         <span class="lang-switch" role="group" aria-label="Language selection">
           <a class="active" href="/apply/midcap/" hreflang="en" lang="en" aria-current="page">EN</a>
           <a href="/tr/basvur/midcap/" hreflang="tr" lang="tr">TR</a>
         </span>
+        <a class="nav-cta" href="/apply/">Applications</a>
       </nav>
     </header>
 

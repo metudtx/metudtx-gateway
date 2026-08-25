@@ -116,6 +116,43 @@
 
     nav a:hover { color: var(--teal-dark); }
 
+    nav details { position: relative; }
+
+    nav summary {
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.94rem;
+      font-weight: 780;
+    }
+
+    nav summary:hover,
+    nav details[open] > summary { color: var(--teal-dark); }
+
+    .nav-programs-panel {
+      position: absolute;
+      z-index: 20;
+      top: calc(100% + 12px);
+      left: 50%;
+      width: 230px;
+      padding: 9px;
+      transform: translateX(-50%);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.98);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .nav-programs-panel a {
+      display: block;
+      padding: 11px 12px;
+      border-radius: 12px;
+      color: var(--ink);
+      font-size: 0.9rem;
+    }
+
+    .nav-programs-panel a:hover,
+    .nav-programs-panel a:focus-visible { background: var(--soft-teal); }
+
     nav a.nav-cta {
       color: #fff;
       background: var(--teal);
@@ -646,6 +683,13 @@
 
       nav { justify-content: flex-start; gap: 12px; }
       nav a.nav-cta { padding: 9px 13px; }
+      nav details { position: static; }
+      .nav-programs-panel {
+        position: static;
+        width: min(100%, 280px);
+        margin-top: 10px;
+        transform: none;
+      }
 
       .hero {
         min-height: auto;
@@ -672,17 +716,21 @@
       <a class="brand" href="https://metudtx.com/tr/" aria-label="METU DTX Geçit Ana Sayfası">
         <img class="brand-logo" src="../metu-dtx-logo.png" alt="METU DTX Dijital Dönüşüm ve İnovasyon Merkezi">
       </a>
-      <nav aria-label="Main navigation">
+      <nav aria-label="Ana navigasyon">
         <a href="https://portal.metudtx.com/tr/">Platform</a>
-        <a href="https://ai4gtech.metudtx.com/tr/">AI4GTech</a>
-        <a href="/tr/basvur/digitaltr/">DIGITALTR Başvurusu</a>
-        <a href="https://dtx.metu.edu.tr">Ana Site</a>
-        <a href="mailto:info@metudtx.com">İletişim</a>
+        <details>
+          <summary>Programlar</summary>
+          <div class="nav-programs-panel">
+            <a href="/tr/basvur/digitaltr/">DigitalTR</a>
+            <a href="https://ai4gtech.metudtx.com/tr/">AI4GTech Anatolia</a>
+          </div>
+        </details>
+        <a href="https://dtx.metu.edu.tr">Merkez Hakkında</a>
         <span class="lang-switch" aria-label="Dil seçimi">
           <a href="/" hreflang="en" lang="en">EN</a>
           <a class="active" href="/tr/" hreflang="tr" lang="tr" aria-current="page">TR</a>
         </span>
-        <a class="nav-cta" href="https://portal.metudtx.com/tr/">Değerlendirmeye Başla</a>
+        <a class="nav-cta" href="/tr/basvur/">Başvurular</a>
       </nav>
     </header>
 
@@ -694,14 +742,14 @@
           METU DTX; firmaları dijital olgunluk değerlendirmesi, kanıta dayalı yol haritası, test-before-invest altyapısı, yapay zekâ ve yeşil dönüşüm hizmetleri ile uygulama desteğine bağlar.
         </p>
         <div class="hero-actions">
-          <a class="button primary" href="https://portal.metudtx.com/tr/">Dijital Olgunluk Değerlendirmesine Başla</a>
-          <a class="button secondary" href="https://ai4gtech.metudtx.com/tr/">AI4GTech Anatolia’yı İncele</a>
-          <a class="button ghost" href="/tr/basvur/digitaltr/">DIGITALTR'a Başvur</a>
+          <a class="button primary" href="/tr/basvur/">Başvuru yollarını inceleyin</a>
+          <a class="button secondary" href="/tr/basvur/digitaltr/">Dijital dönüşüm hizmetleri</a>
+          <a class="button ghost" href="https://ai4gtech.metudtx.com/tr/">Yapay zekâ, yeşil dönüşüm ve eğitim hizmetleri</a>
         </div>
       </div>
 
       <aside class="hero-visual" aria-label="METU DTX dönüşüm geçidi görseli">
-        <img class="tree-bg" src="metu-dtx-tree.png" alt="" aria-hidden="true">
+        <img class="tree-bg" src="/metu-dtx-tree.png" alt="" aria-hidden="true">
         <div class="visual-grid">
           <div class="hub-card">
             <div class="hub-label">Dönüşüm işletim katmanı</div>
@@ -753,14 +801,14 @@
 
       <div class="routes">
         <a class="route-card primary-route" href="https://portal.metudtx.com/tr/">
-          <span class="route-kicker">Ana rota</span>
+          <span class="route-kicker">Operasyonel altyapı</span>
           <h3>METU DTX Dijital Dönüşüm Platformu</h3>
-          <p>Firma kaydı, öz değerlendirme ve yapılandırılmış dijital olgunluk değerlendirme süreci buradan başlar. Firmalar için operasyonel giriş noktasıdır.</p>
-          <span class="route-link">Platform giriş sayfasını aç</span>
+          <p>Firma çalışma alanına, öz değerlendirmeye ve uzman liderliğindeki dijital olgunluk değerlendirme araçlarına erişin.</p>
+          <span class="route-link">Platformu açın</span>
         </a>
 
         <a class="route-card" href="https://ai4gtech.metudtx.com/tr/">
-          <img class="route-logo" src="ai4gtech-logo.png" alt="AI4GTech Anatolia logo">
+          <img class="route-logo" src="/ai4gtech-logo.png" alt="AI4GTech Anatolia logo">
           <span class="route-kicker">EDIH rotası</span>
           <h3>AI4GTech Anatolia</h3>
           <p>Test-before-invest, eğitim, finansmana erişim ve inovasyon ekosistemi desteğini içeren yapay zekâ, yeşil ve ikiz dönüşüm hizmetlerini inceleyin.</p>
@@ -843,12 +891,12 @@
     </section>
 
     <section class="cta">
-      <h2>Platformdan başlayın.</h2>
+      <h2>Doğru başvuru yolunu bulun.</h2>
       <p>
-        Firmalar METU DTX Dijital Dönüşüm Platformu üzerinden başlamalıdır. Değerlendirme çıktıları buradan yol haritası hazırlığına, test-before-invest hizmetlerine, AI4GTech Anatolia hizmetlerine ve uygulama yollarına bağlanabilir.
+        İşletmenizin ölçeğine ve dönüşüm önceliklerine göre hizmet yolunu seçin. METU DTX her ihtiyacı ilgili değerlendirme, danışmanlık, doğrulama veya yetkinlik geliştirme hizmetine yönlendirir.
       </p>
       <div class="cta-actions">
-        <a class="button primary" href="https://portal.metudtx.com/tr/">Platforma Git</a>
+        <a class="button primary" href="/tr/basvur/">Başvurular</a>
         <a class="button secondary" href="mailto:info@metudtx.com">METU DTX ile İletişime Geç</a>
       </div>
     </section>

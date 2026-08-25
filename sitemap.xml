@@ -2,6 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://metudtx.com/</loc></url>
   <url><loc>https://metudtx.com/tr/</loc></url>
+  <url><loc>https://metudtx.com/apply/</loc></url>
+  <url><loc>https://metudtx.com/tr/basvur/</loc></url>
   <url><loc>https://metudtx.com/apply/digitaltr/</loc></url>
   <url><loc>https://metudtx.com/tr/basvur/digitaltr/</loc></url>
+  <url><loc>https://metudtx.com/services/large-enterprises/</loc></url>
+  <url><loc>https://metudtx.com/tr/hizmetler/buyuk-isletmeler/</loc></url>
 </urlset>

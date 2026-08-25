@@ -774,6 +774,110 @@ footer a {
   white-space: nowrap !important;
 }
 
+
+.application-route-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+.application-route-card {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  padding: 32px;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  box-shadow: var(--shadow-soft);
+}
+
+.application-route-card--program {
+  border-color: rgba(36, 60, 122, 0.2);
+  background: linear-gradient(145deg, rgba(238, 243, 255, 0.96), rgba(255, 255, 255, 0.96));
+}
+
+.application-route-card--direct {
+  border-color: rgba(15, 118, 110, 0.22);
+  background: linear-gradient(145deg, rgba(231, 244, 241, 0.96), rgba(255, 255, 255, 0.96));
+}
+
+.application-route-card h3 {
+  margin: 18px 0 12px;
+  font-size: clamp(1.45rem, 3vw, 2.05rem);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+
+.application-route-card p {
+  margin: 0 0 14px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.route-badge {
+  align-self: flex-start;
+  padding: 8px 12px;
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--teal-dark);
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.route-list {
+  display: grid;
+  gap: 10px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.route-list li {
+  position: relative;
+  padding-left: 24px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.route-list li::before {
+  position: absolute;
+  top: 0.55em;
+  left: 2px;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--teal);
+  content: "";
+}
+
+.application-route-card .card-actions {
+  margin-top: auto;
+  padding-top: 26px;
+}
+
+.hero--compact {
+  min-height: auto;
+  grid-template-columns: minmax(0, 860px);
+  padding: 56px 0 20px;
+}
+
+.hero--compact h1 {
+  font-size: clamp(2.55rem, 5.7vw, 5rem);
+}
+
+@media (max-width: 700px) {
+  .application-route-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .application-route-card {
+    padding: 26px 20px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

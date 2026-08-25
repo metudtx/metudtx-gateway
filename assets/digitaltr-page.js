@@ -27,7 +27,7 @@
 
   function settings() {
     const config = global.METUDTX_CONFIG && global.METUDTX_CONFIG.digitaltr;
-    if (!config || config.schemaVersion !== SCHEMA_VERSION || config.protocolVersion !== PROTOCOL_VERSION ||
+    if (!config || config.status !== "open" || config.schemaVersion !== SCHEMA_VERSION || config.protocolVersion !== PROTOCOL_VERSION ||
         (config.environment !== "TEST" && config.environment !== "PRODUCTION") ||
         typeof config.appsScriptBridgeUrl !== "string") {
       throw new Error("DigitalTR backend configuration is unavailable.");
@@ -267,6 +267,12 @@
   const ui = {
     tr: {
       open: "Başvuruya Başla",
+      pausedCta: "Resmî DIGITALTR Başvuru Portalına Git",
+      pausedWindow: "METU DTX üzerinden yeni başvuru alımı durduruldu",
+      pausedTitle: "METU DTX başvuru formu pasife alındı",
+      pausedBody: "DIGITALTR’ın resmî başvuru sistemi değiştiği için bu form üzerinden yeni başvuru alınmamaktadır. Yeni başvurular kayıt ve token bağlantısı ile resmî DIGITALTR portalı üzerinden yürütülmektedir.",
+      pausedHero: "DIGITALTR’ın resmî başvuru akışı değişmiştir. METU DTX üzerindeki form pasife alınmış olup yeni başvurular resmî DIGITALTR portalı üzerinden yürütülmektedir.",
+      pausedSectionIntro: "Bu form yeni başvurulara kapatılmıştır. Devam etmek için resmî DIGITALTR başvuru portalını kullanın.",
       windowPrefix: "İlk başvuru dönemi",
       emailSubject: "DigitalTR başvurusu hakkında",
       contact: "DigitalTR başvurusu hakkında iletişime geçin",
@@ -304,6 +310,12 @@
     },
     en: {
       open: "Start Application",
+      pausedCta: "Go to the Official DIGITALTR Application Portal",
+      pausedWindow: "New applications through METU DTX are paused",
+      pausedTitle: "The METU DTX application form is inactive",
+      pausedBody: "The official DIGITALTR application system has changed, so new applications are no longer accepted through this form. New applications now proceed through registration and a token link on the official DIGITALTR portal.",
+      pausedHero: "The official DIGITALTR application flow has changed. The METU DTX form is inactive, and new applications now proceed through the official DIGITALTR portal.",
+      pausedSectionIntro: "This form is closed to new applications. Use the official DIGITALTR application portal to continue.",
       windowPrefix: "First application window",
       emailSubject: "Question about the DIGITALTR application",
       contact: "Contact us about the DIGITALTR application",
@@ -388,6 +400,21 @@
     return ui.windowPrefix + ": " + startFormatter.format(start) + "–" + endFormatter.format(end);
   }
 
+  function officialApplicationUrl() {
+    if (!config || typeof config.officialApplicationUrl !== "string") {
+      return "";
+    }
+    try {
+      const url = new URL(config.officialApplicationUrl);
+      if (url.protocol !== "https:" || url.hostname !== "survey.digitaltr.org" || url.pathname !== "/basvuru") {
+        return "";
+      }
+      return url.href;
+    } catch (_error) {
+      return "";
+    }
+  }
+
   function makeContactLink(className) {
     if (!config || typeof config.contactEmail !== "string" || !config.contactEmail.includes("@")) {
       return null;
@@ -398,8 +425,9 @@
   }
 
   function populatePublicPage() {
+    const isOpen = Boolean(config && config.status === "open");
     document.querySelectorAll("[data-window-label]").forEach(function (node) {
-      const label = formatWindowLabel();
+      const label = isOpen ? formatWindowLabel() : ui.pausedWindow;
       if (label) {
         node.textContent = label;
       }
@@ -417,10 +445,42 @@
     });
 
     document.querySelectorAll("[data-digitaltr-primary-cta]").forEach(function (slot) {
-      const link = element("a", slot.dataset.placement === "nav" ? "nav-cta" : "button primary", ui.open);
-      link.href = "#" + config.applicationSectionId;
+      const link = element(
+        "a",
+        slot.dataset.placement === "nav" ? "nav-cta" : "button primary",
+        isOpen ? ui.open : ui.pausedCta
+      );
+      if (isOpen) {
+        link.href = "#" + config.applicationSectionId;
+      } else {
+        const officialUrl = officialApplicationUrl();
+        if (!officialUrl) {
+          slot.hidden = true;
+          return;
+        }
+        link.href = officialUrl;
+      }
       slot.replaceChildren(link);
+      slot.hidden = false;
     });
+
+    if (!isOpen) {
+      const heroLead = document.querySelector(".hero .lead");
+      if (heroLead) {
+        heroLead.textContent = ui.pausedHero;
+      }
+      const processSection = document.querySelector('[aria-labelledby="process-title"]');
+      if (processSection) {
+        processSection.hidden = true;
+      }
+      const applicationSection = document.querySelector("[data-digitaltr-application-section]");
+      if (applicationSection) {
+        const heading = applicationSection.querySelector(".section-title h2");
+        const intro = applicationSection.querySelector(".section-title p");
+        if (heading) heading.textContent = ui.pausedTitle;
+        if (intro) intro.textContent = ui.pausedSectionIntro;
+      }
+    }
   }
 
   function requiredMarker(target) {
@@ -1261,9 +1321,34 @@
     return view;
   }
 
+  function renderPausedNotice(container) {
+    const root = element("div", "digitaltr-form");
+    const notice = element("section", "digitaltr-form__section");
+    notice.setAttribute("aria-labelledby", "digitaltr-paused-title");
+    const heading = element("h3", "", ui.pausedTitle);
+    heading.id = "digitaltr-paused-title";
+    const body = element("p", "digitaltr-form__description", ui.pausedBody);
+    notice.append(heading, body);
+
+    const officialUrl = officialApplicationUrl();
+    if (officialUrl) {
+      const actions = element("div", "digitaltr-form__actions");
+      const link = element("a", "button primary", ui.pausedCta);
+      link.href = officialUrl;
+      actions.appendChild(link);
+      notice.appendChild(actions);
+    }
+    root.appendChild(notice);
+    container.replaceChildren(root);
+  }
+
   function renderApplication() {
     const container = document.querySelector("[data-digitaltr-application-container]");
     if (!container) {
+      return;
+    }
+    if (config && config.status !== "open") {
+      renderPausedNotice(container);
       return;
     }
     if (!config || !schema || !adapter || schema.schemaVersion !== config.schemaVersion) {

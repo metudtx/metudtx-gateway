@@ -397,11 +397,103 @@
   height: auto;
 }
 
-.poster-card figcaption {
-  padding: 16px 18px 18px;
-  color: var(--muted);
-  font-size: 0.82rem;
-  line-height: 1.5;
+.poster-open {
+  position: relative;
+  display: block;
+  cursor: zoom-in;
+  text-decoration: none;
+}
+
+.poster-open:focus-visible {
+  outline: 4px solid rgba(36, 60, 122, 0.72);
+  outline-offset: -4px;
+}
+
+.poster-zoom-label {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  padding: 9px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 999px;
+  background: rgba(5, 20, 43, 0.86);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 820;
+  letter-spacing: 0.02em;
+  box-shadow: 0 10px 28px rgba(5, 20, 43, 0.28);
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.poster-open:hover .poster-zoom-label,
+.poster-open:focus-visible .poster-zoom-label {
+  background: var(--teal-dark);
+  transform: translateY(-2px);
+}
+
+body.poster-dialog-open {
+  overflow: hidden;
+}
+
+.poster-dialog {
+  max-width: none;
+  max-height: none;
+  margin: auto;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+}
+
+.poster-dialog::backdrop {
+  background: rgba(2, 12, 27, 0.92);
+  backdrop-filter: blur(4px);
+}
+
+.poster-dialog-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(94vw, 1616px);
+  height: 92vh;
+}
+
+.poster-dialog img {
+  display: block;
+  width: auto;
+  max-width: 94vw;
+  height: auto;
+  max-height: 92vh;
+  border-radius: 16px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.52);
+  object-fit: contain;
+}
+
+.poster-dialog-close {
+  position: fixed;
+  z-index: 2;
+  top: 18px;
+  right: 18px;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  border-radius: 50%;
+  background: rgba(5, 20, 43, 0.9);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.poster-dialog-close:hover,
+.poster-dialog-close:focus-visible {
+  background: var(--teal-dark);
+  outline: 3px solid rgba(255, 255, 255, 0.82);
+  outline-offset: 3px;
 }
 
 .highlight-note,

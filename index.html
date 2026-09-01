@@ -681,6 +681,15 @@
       background: var(--soft-teal);
     }
 
+    @media (max-width: 1180px) {
+      header.topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      nav { justify-content: flex-start; gap: 14px; }
+    }
+
     @media (max-width: 1040px) {
       .hero,
       .split { grid-template-columns: 1fr; }
@@ -743,6 +752,7 @@
             <a href="https://ai4gtech.metudtx.com">AI4GTech Anatolia</a>
           </div>
         </details>
+        <a href="/news-events/">News &amp; Events</a>
         <a href="https://dtx.metu.edu.tr">About the Centre</a>
         <span class="lang-switch" aria-label="Language selection">
           <a class="active" href="/" hreflang="en" lang="en" aria-current="page">EN</a>

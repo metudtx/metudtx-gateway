@@ -957,6 +957,18 @@ footer a {
   }
 }
 
+@media (max-width: 1180px) {
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  nav {
+    justify-content: flex-start;
+    gap: 14px;
+  }
+}
+
 @media (max-width: 1040px) {
   .hero,
   .two-column,

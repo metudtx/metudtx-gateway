@@ -550,6 +550,61 @@ body.poster-dialog-open {
   line-height: 1.48;
 }
 
+.application-schedule-section {
+  margin-top: 34px;
+}
+
+.application-schedule-section > p {
+  margin-bottom: 20px;
+}
+
+.application-schedule {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 20px;
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+  text-align: left;
+}
+
+.application-schedule th,
+.application-schedule td {
+  padding: 17px 19px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.application-schedule thead th {
+  background: var(--navy-dark);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 820;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.application-schedule tbody th {
+  color: var(--teal-dark);
+  font-weight: 820;
+}
+
+.application-schedule tbody td {
+  color: var(--ink);
+  font-weight: 680;
+}
+
+.application-schedule tbody tr:last-child th,
+.application-schedule tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.application-schedule td::before {
+  display: none;
+}
+
 .registration-intro {
   display: grid;
   grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
@@ -734,5 +789,74 @@ body.poster-dialog-open {
   .registration-form-heading {
     padding-right: 22px;
     padding-left: 22px;
+  }
+
+  .application-schedule,
+  .application-schedule tbody,
+  .application-schedule tr,
+  .application-schedule th,
+  .application-schedule td {
+    display: block;
+  }
+
+  .application-schedule {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .application-schedule thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .application-schedule tbody {
+    display: grid;
+    gap: 14px;
+  }
+
+  .application-schedule tbody tr {
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--panel);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .application-schedule tbody th,
+  .application-schedule tbody td {
+    padding: 15px 17px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .application-schedule tbody th {
+    background: var(--soft-teal);
+  }
+
+  .application-schedule tbody td {
+    display: grid;
+    grid-template-columns: minmax(110px, 0.72fr) minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .application-schedule tbody td::before {
+    display: block;
+    color: var(--muted);
+    content: attr(data-label);
+    font-size: 0.72rem;
+    font-weight: 820;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .application-schedule tbody tr:last-child th {
+    border-bottom: 1px solid var(--line);
   }
 }

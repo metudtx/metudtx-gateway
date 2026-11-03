@@ -1,6 +1,6 @@
 # METU DTX historical website archive
 
-Host: https://arsiv.metudtx.com
+Host: https://metudtx.org
 
 Gateway snapshot: `144fd2e09b2a9e03d38bcf691d0890bbd322221e` (23 September 2026).
 Portal landing snapshot: `6a9b3bb8e52947bc372437b14df65d37b1297edd`, served under `/platform/`.
@@ -11,10 +11,10 @@ HTML pages include an archive banner and noindex metadata. Original historical c
 
 ## Publishing
 
-GitHub Pages: `main`, repository root, custom domain `arsiv.metudtx.com`.
-DNS: CNAME `arsiv` -> `metudtx.github.io`. No apex-domain, www, MX or other subdomain changes are needed.
+GitHub Pages: `main`, repository root, custom domain `metudtx.org`.
+DNS: Use only the metudtx.org web DNS records for GitHub Pages. Preserve all metudtx.com DNS records and hosting. Preserve unrelated MX and TXT records.
 Enable HTTPS after the certificate is issued.
 
 ## Retiring the archive
 
-When explicitly requested, unpublish this repository's Pages site and remove only the `arsiv` DNS record. Preserve repository history. Do not change the new site's infrastructure.
+When explicitly requested, unpublish this repository's Pages site and remove only the archive web DNS records for metudtx.org. Preserve repository history. Do not change the new site's infrastructure.

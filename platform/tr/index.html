@@ -1,0 +1,1320 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>METU DTX Dijital Dönüşüm Platformu</title>
+  <meta name="description" content="METU DTX dijital olgunluk değerlendirmesi, uzman incelemesi, yol haritası ve uygulamaya hazır proje planlama sürecini başlatın.">
+  <link rel="icon" href="../favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <style>
+    :root {
+      --bg: #f6faf9;
+      --bg-2: #eef5f4;
+      --panel: #ffffff;
+      --panel-soft: rgba(255, 255, 255, 0.82);
+      --ink: #0e1b2a;
+      --muted: #5c6b76;
+      --line: #dce7e8;
+      --navy: #18345f;
+      --navy-2: #102642;
+      --teal: #0f766e;
+      --teal-2: #0b5c55;
+      --green: #6aa77a;
+      --amber: #b7791f;
+      --soft-teal: #e7f4f1;
+      --soft-blue: #eef3ff;
+      --soft-green: #eef8f0;
+      --soft-amber: #fff7e8;
+      --shadow: 0 24px 80px rgba(14, 27, 42, 0.10);
+      --shadow-soft: 0 16px 48px rgba(14, 27, 42, 0.075);
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 10% 3%, rgba(15, 118, 110, 0.15), transparent 30%),
+        radial-gradient(circle at 92% 2%, rgba(24, 52, 95, 0.14), transparent 28%),
+        linear-gradient(180deg, #f7fbfa 0%, #f5faf9 48%, #eef5f4 100%);
+      color: var(--ink);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page-shell {
+      width: min(1160px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 34px 0 32px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 16px 0;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: var(--ink);
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 172px;
+      height: auto;
+      display: block;
+      flex: 0 0 auto;
+    }
+
+    .brand-copy {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .brand-copy strong {
+      font-weight: 900;
+      letter-spacing: -0.045em;
+      font-size: 1.08rem;
+      line-height: 1.05;
+      color: var(--ink);
+    }
+
+    .brand-copy span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0;
+      margin-top: 3px;
+      line-height: 1.25;
+    }
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+nav > a {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 0.94rem;
+  line-height: 1;
+}
+
+nav > a:hover {
+  color: var(--teal-2);
+}
+
+
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 48px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 8px 22px rgba(15, 31, 29, 0.05);
+  vertical-align: middle;
+}
+
+.lang-switch a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 40px;
+  padding: 0;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1;
+  text-decoration: none;
+}
+
+    .lang-switch a.active {
+      background: var(--teal);
+      color: #fff;
+    }
+
+    .lang-switch a:not(.active):hover {
+      color: var(--teal-2);
+      background: var(--soft-teal);
+    }
+
+    .hero {
+      min-height: 570px;
+      display: grid;
+      grid-template-columns: 1.02fr 0.98fr;
+      gap: 42px;
+      align-items: center;
+      padding: 54px 0 40px;
+    }
+
+    .eyebrow {
+      color: var(--teal);
+      font-size: 0.79rem;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 4.96vw, 4.6rem);
+      line-height: 0.96;
+      letter-spacing: -0.075em;
+      color: var(--ink);
+    }
+
+    .lead {
+      max-width: 740px;
+      margin: 26px 0 0;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 1.75vw, 1.24rem);
+      line-height: 1.67;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      padding: 0 24px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 900;
+      border: 1px solid var(--line);
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .button.primary {
+      background: var(--navy);
+      color: #fff;
+      border-color: var(--navy);
+    }
+
+    .button.primary:hover {
+      background: var(--navy-2);
+    }
+
+    .button.secondary {
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--ink);
+    }
+
+    .button.secondary:hover {
+      border-color: rgba(15, 118, 110, 0.35);
+    }
+
+    .button.ghost {
+      background: transparent;
+      color: var(--teal-2);
+      border-color: transparent;
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+
+    .visual-panel {
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .visual-panel::before {
+      content: "";
+      position: absolute;
+      inset: auto -90px -120px auto;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(15, 118, 110, 0.16), transparent 62%);
+      pointer-events: none;
+    }
+
+    .dashboard-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .dashboard-title {
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      font-size: 1.18rem;
+    }
+
+    .dashboard-subtitle {
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.45;
+      font-size: 0.92rem;
+    }
+
+    .status-pill {
+      background: var(--soft-green);
+      color: #236238;
+      border: 1px solid rgba(106, 167, 122, 0.28);
+      border-radius: 999px;
+      padding: 8px 11px;
+      font-size: 0.78rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.02fr 0.98fr;
+      gap: 14px;
+    }
+
+    .mini-card {
+      background: rgba(246, 250, 249, 0.94);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+      min-height: 150px;
+    }
+
+    .mini-card h3 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+    }
+
+    .score {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .score strong {
+      font-size: 3rem;
+      line-height: 1;
+      letter-spacing: -0.07em;
+      color: var(--navy);
+    }
+
+    .score span {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .bar-stack {
+      display: grid;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .bar {
+      height: 8px;
+      background: #e7eef0;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--teal), var(--navy));
+    }
+
+    .axis-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .axis-chip {
+      border: 1px solid rgba(24, 52, 95, 0.12);
+      background: #fff;
+      border-radius: 13px;
+      padding: 8px 9px;
+      color: var(--muted);
+      font-size: 0.79rem;
+      font-weight: 800;
+    }
+
+    .spider-wrap {
+      display: grid;
+      place-items: center;
+      min-height: 176px;
+    }
+
+    .timeline-card {
+      grid-column: 1 / -1;
+      background: var(--navy-2);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .timeline-card h3 {
+      color: #fff;
+    }
+
+    .roadmap-mini {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .road-item {
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 14px;
+      padding: 11px;
+      min-height: 72px;
+    }
+
+    .road-item small {
+      color: rgba(255, 255, 255, 0.62);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .road-item strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.88rem;
+      line-height: 1.28;
+    }
+
+    section {
+      margin-top: 34px;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: clamp(1.85rem, 4vw, 3rem);
+      letter-spacing: -0.065em;
+      line-height: 1.02;
+    }
+
+    .section-title p {
+      max-width: 780px;
+      margin: 14px auto 0;
+      color: var(--muted);
+      line-height: 1.67;
+      font-size: 1.04rem;
+    }
+
+    .principles {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .principle-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .principle-card .label {
+      color: var(--teal);
+      font-size: 0.76rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .principle-card h3 {
+      margin: 13px 0 10px;
+      font-size: 1.2rem;
+      letter-spacing: -0.035em;
+    }
+
+    .principle-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.62;
+    }
+
+    .value-flow {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      padding: 26px;
+      box-shadow: var(--shadow-soft);
+      margin-top: 16px;
+    }
+
+    .flow-row {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .flow-node {
+      background: linear-gradient(180deg, #ffffff, #f7fbfa);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      min-height: 112px;
+      position: relative;
+    }
+
+    .flow-node:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -13px;
+      width: 14px;
+      height: 2px;
+      background: rgba(15, 118, 110, 0.34);
+    }
+
+    .flow-node small {
+      color: var(--teal);
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .flow-node strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 1rem;
+      line-height: 1.28;
+      letter-spacing: -0.02em;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .step {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      min-height: 238px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 4px;
+      background: linear-gradient(90deg, var(--teal), var(--navy));
+    }
+
+    .step-num {
+      width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: var(--navy);
+      color: #fff;
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+
+    .step h3 {
+      margin: 0 0 10px;
+      font-size: 1.05rem;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.57;
+      font-size: 0.94rem;
+    }
+
+    .model-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .model-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .metric {
+      background: var(--soft-blue);
+      border: 1px solid rgba(24, 52, 95, 0.12);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--navy);
+      font-size: 2rem;
+      line-height: 1;
+      letter-spacing: -0.055em;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.35;
+      font-size: 0.9rem;
+      font-weight: 750;
+    }
+
+    .maturity-scale {
+      margin-top: 20px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .scale-row {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .scale-level {
+      font-weight: 900;
+      color: var(--navy);
+    }
+
+    .scale-track {
+      height: 12px;
+      background: #e5edf0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .scale-track i {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--green), var(--teal), var(--navy));
+    }
+
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .output-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow-soft);
+      min-height: 230px;
+    }
+
+    .output-card h3 {
+      margin: 0 0 10px;
+      font-size: 1.08rem;
+      letter-spacing: -0.03em;
+    }
+
+    .output-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.94rem;
+    }
+
+    .report-stack {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .report {
+      background: linear-gradient(180deg, #ffffff, #f8fbfb);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+      min-height: 170px;
+    }
+
+    .report h4 {
+      margin: 0 0 12px;
+      font-size: 0.98rem;
+      letter-spacing: -0.02em;
+    }
+
+    .fake-lines {
+      display: grid;
+      gap: 8px;
+    }
+
+    .fake-lines i {
+      display: block;
+      height: 8px;
+      border-radius: 99px;
+      background: #e2ecee;
+    }
+
+    .fake-lines i:nth-child(1) { width: 92%; }
+    .fake-lines i:nth-child(2) { width: 72%; }
+    .fake-lines i:nth-child(3) { width: 84%; }
+    .fake-lines i:nth-child(4) { width: 56%; }
+
+    .lab-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .lab-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow-soft);
+      min-height: 230px;
+    }
+
+    .lab-card .lab-tag {
+      display: inline-flex;
+      color: var(--teal-2);
+      background: var(--soft-teal);
+      border: 1px solid rgba(15, 118, 110, 0.14);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-weight: 900;
+      font-size: 0.76rem;
+      margin-bottom: 14px;
+    }
+
+    .lab-card h3 {
+      margin: 0 0 10px;
+      font-size: 1.05rem;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+    }
+
+    .lab-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.58;
+      font-size: 0.94rem;
+    }
+
+    .investment {
+      background: linear-gradient(135deg, var(--navy-2), var(--teal-2));
+      color: #fff;
+      border-radius: var(--radius-xl);
+      padding: 34px;
+      box-shadow: var(--shadow);
+    }
+
+    .investment .section-title {
+      margin-bottom: 22px;
+    }
+
+    .investment .section-title h2,
+    .investment .section-title p {
+      color: #fff;
+    }
+
+    .investment .section-title p {
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .investment-flow {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .investment-node {
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.09);
+      border-radius: 18px;
+      padding: 16px;
+      min-height: 118px;
+    }
+
+    .investment-node small {
+      color: rgba(255, 255, 255, 0.62);
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .investment-node strong {
+      display: block;
+      margin-top: 8px;
+      color: #fff;
+      line-height: 1.25;
+      font-size: 0.98rem;
+    }
+
+    .notice {
+      background: var(--soft-amber);
+      border: 1px solid rgba(183, 121, 31, 0.28);
+      border-radius: 26px;
+      padding: 24px;
+      color: #74480d;
+      line-height: 1.62;
+      margin-top: 30px;
+    }
+
+    .notice strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #74480d;
+      font-size: 1.05rem;
+    }
+
+    footer {
+      margin-top: 30px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    footer a {
+      color: var(--navy);
+      text-decoration: none;
+      font-weight: 900;
+    }
+
+    @media (max-width: 1080px) {
+      .hero,
+      .model-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .steps,
+      .flow-row,
+      .investment-flow {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .flow-node:not(:last-child)::after {
+        display: none;
+      }
+
+      .output-grid,
+      .lab-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page-shell {
+        width: min(100% - 28px, 1160px);
+        padding-top: 18px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .brand-mark {
+        width: 154px;
+      }
+
+      .brand-copy strong {
+        font-size: 1rem;
+      }
+
+      .brand-copy span {
+        font-size: 0.72rem;
+      }
+
+      nav {
+        justify-content: flex-start;
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 46px 0 34px;
+      }
+
+      h1 {
+        font-size: clamp(2.04rem, 10.4vw, 3.44rem);
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .button.ghost {
+        width: auto;
+      }
+
+      .dashboard-grid,
+      .principles,
+      .steps,
+      .flow-row,
+      .output-grid,
+      .lab-grid,
+      .investment-flow,
+      .report-stack,
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .axis-list {
+        grid-template-columns: 1fr;
+      }
+
+      .roadmap-mini {
+        grid-template-columns: 1fr;
+      }
+
+      .visual-panel,
+      .model-card,
+      .investment {
+        padding: 22px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="/platform/portal-nav.css?v=1.0.0">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <link rel="stylesheet" href="/assets/archive.css">
+</head>
+<body>
+<aside class="metudtx-archive-banner" aria-label="Arşiv" lang="tr"><span>Arşiv · Eski site sürümü · 23 Eylül 2026</span><a href="https://metudtx.com/">Yeni site</a></aside>
+  <main class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="https://metudtx.org/platform/tr/" aria-label="METU DTX Platform ana sayfası">
+        <img class="brand-mark" src="../metu-dtx-logo.png" alt="METU DTX">
+      </a>
+      <nav class="main-nav" aria-label="Ana navigasyon">
+        <a href="https://metudtx.org/platform/tr/" aria-current="page">Platform</a>
+        <details class="nav-programs">
+          <summary>Programlar</summary>
+          <div class="nav-programs-panel">
+            <a href="https://metudtx.org/tr/basvur/midcap/">DigitalTR</a>
+            <a href="https://ai4gtech.metudtx.com/tr/">AI4GTech Anatolia</a>
+          </div>
+        </details>
+        <a href="https://metudtx.org/tr/etkinlikler-duyurular/">Etkinlik &amp; Duyurular</a>
+        <a href="https://dtx.metu.edu.tr">Merkez Hakkında</a>
+        <span class="lang-switch" aria-label="Dil seçimi"><a href="/platform/">EN</a><a class="active" href="/platform/tr/">TR</a></span>
+        <a class="nav-contact" href="https://metudtx.org/tr/iletisim/">İletişim</a>
+        <a class="nav-cta" href="https://metudtx.org/tr/basvur/">Başvurular</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow">METU DTX Dijital Dönüşüm Platformu</div>
+        <h1>METU DTX ile Dijital Dönüşüm Yolculuğunuza Başlayın</h1>
+        <p class="lead">
+          METU DTX Dijital Dönüşüm Platformu, firmaları başvuru ve öz değerlendirmeden uzman incelemesine, kanıta dayalı olgunluk skorlamasına, yol haritası hazırlığına ve uygulamaya hazır proje planlamasına kadar yapılandırılmış bir süreçte yönlendirir.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="https://dtxportal.metu.edu.tr/apply">Başvur</a>
+          <a class="button secondary" href="https://dtxportal.metu.edu.tr/Auth/Login">Giriş</a>
+          <a class="button ghost" href="#workflow">Değerlendirme Sürecini İncele</a>
+        </div>
+      </div>
+
+      <aside class="visual-panel" aria-label="Örnek platform gösterge paneli">
+        <div class="dashboard-top">
+          <div>
+            <div class="dashboard-title">Dönüşüm Gösterge Paneli</div>
+            <div class="dashboard-subtitle">Değerlendirme, skor ve yol haritası çıktılarının örnek görünümü</div>
+          </div>
+          <span class="status-pill">Pilot Erişim</span>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="mini-card">
+            <h3>Dijital Olgunluk Skoru</h3>
+            <div class="score">
+              <strong>3.1</strong>
+              <span>/ 5</span>
+            </div>
+            <div class="bar-stack" aria-hidden="true">
+              <div class="bar"><i style="width: 62%"></i></div>
+              <div class="bar"><i style="width: 48%"></i></div>
+              <div class="bar"><i style="width: 76%"></i></div>
+            </div>
+          </div>
+
+          <div class="mini-card">
+            <h3>Stratejik Eksenler</h3>
+            <div class="axis-list">
+              <div class="axis-chip">Süreç</div>
+              <div class="axis-chip">Veri</div>
+              <div class="axis-chip">Sistemler</div>
+              <div class="axis-chip">Kültür</div>
+              <div class="axis-chip">Risk</div>
+              <div class="axis-chip">Yol Haritası</div>
+            </div>
+          </div>
+
+          <div class="mini-card">
+            <h3>Radar Grafik</h3>
+            <div class="spider-wrap">
+              <svg width="174" height="150" viewBox="0 0 174 150" role="img" aria-label="Illustrative spider chart">
+                <g transform="translate(87 75)">
+                  <polygon points="0,-58 50,-29 50,29 0,58 -50,29 -50,-29" fill="none" stroke="#d8e4e5" stroke-width="1.4"/>
+                  <polygon points="0,-41 36,-21 39,23 0,49 -30,17 -42,-24" fill="rgba(15,118,110,0.18)" stroke="#0f766e" stroke-width="2"/>
+                  <line x1="0" y1="-58" x2="0" y2="58" stroke="#d8e4e5"/>
+                  <line x1="-50" y1="-29" x2="50" y2="29" stroke="#d8e4e5"/>
+                  <line x1="50" y1="-29" x2="-50" y2="29" stroke="#d8e4e5"/>
+                  <circle cx="0" cy="-41" r="3" fill="#0f766e"/>
+                  <circle cx="36" cy="-21" r="3" fill="#0f766e"/>
+                  <circle cx="39" cy="23" r="3" fill="#0f766e"/>
+                  <circle cx="0" cy="49" r="3" fill="#0f766e"/>
+                  <circle cx="-30" cy="17" r="3" fill="#0f766e"/>
+                  <circle cx="-42" cy="-24" r="3" fill="#0f766e"/>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <div class="mini-card">
+            <h3>Kanıt Paketi</h3>
+            <div class="fake-lines" aria-hidden="true">
+              <i></i><i></i><i></i><i></i>
+            </div>
+            <p style="margin:14px 0 0;color:var(--muted);font-size:.9rem;line-height:1.45;">
+              Gözlemler, öneriler, güçlü yönler ve gelişim alanları uzman doğrulamasına uygun şekilde yapılandırılır.
+            </p>
+          </div>
+
+          <div class="mini-card timeline-card">
+            <h3>Yol Haritası Özeti</h3>
+            <div class="roadmap-mini">
+              <div class="road-item"><small>Faz 1</small><strong>Değerlendirme</strong></div>
+              <div class="road-item"><small>Faz 2</small><strong>Proje Kartları</strong></div>
+              <div class="road-item"><small>Faz 3</small><strong>Doğrulama</strong></div>
+              <div class="road-item"><small>Faz 4</small><strong>Uygulama</strong></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section aria-label="Platform konumlandırması">
+      <div class="section-title">
+        <h2>Dijital Değerlendirmeden Ölçülebilir Dönüşüme</h2>
+        <p>
+          Dijital dönüşüm yalnızca BT harcaması olarak ele alınmaz. METU DTX metodolojisi dijitalleşmeyi verimlilik, kalite, izlenebilirlik, çeviklik, maliyet, kaynak verimliliği ve ölçülebilir iş sonuçlarıyla ilişkilendirir.
+        </p>
+      </div>
+
+      <div class="principles">
+        <div class="principle-card">
+          <span class="label">Bağımsız</span>
+          <h3>Tedarikçiden bağımsız değerlendirme</h3>
+          <p>Firmalar, belirli bir teknoloji tedarikçisine veya ürün setine yönlendirilmeden yapılandırılmış ve kanıt odaklı bir olgunluk görünümü elde eder.</p>
+        </div>
+        <div class="principle-card">
+          <span class="label">İş sonucu odaklı</span>
+          <h3>BT envanterinin ötesinde</h3>
+          <p>Değerlendirme, dijital yetkinliği operasyonel performans, yönetim sistemleri, veri kullanımı, kalite, verimlilik ve dönüşüm hazırlığıyla ilişkilendirir.</p>
+        </div>
+        <div class="principle-card">
+          <span class="label">Çıktı odaklı</span>
+          <h3>Yol haritası, proje kartları ve aksiyon kapıları</h3>
+          <p>Süreç, teşhisten önceliklendirilmiş aksiyonlara, uygulama mantığına ve teknik doğrulama yollarına geçişi sağlayacak şekilde tasarlanmıştır.</p>
+        </div>
+      </div>
+
+      <div class="value-flow">
+        <div class="flow-row">
+          <div class="flow-node"><small>01</small><strong>Değerlendirme</strong></div>
+          <div class="flow-node"><small>02</small><strong>Yol Haritası</strong></div>
+          <div class="flow-node"><small>03</small><strong>Proje Kartları</strong></div>
+          <div class="flow-node"><small>04</small><strong>Yatırım Kapıları</strong></div>
+          <div class="flow-node"><small>05</small><strong>Uygulama Desteği</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="workflow">
+      <div class="section-title">
+        <h2>Yapılandırılmış Değerlendirme-Yol Haritası Akışı</h2>
+        <p>
+          Platform, firma girişinden uzman doğrulamasına, olgunluk analizinden dönüşüm yol haritası hazırlığına kadar dijital olgunluk değerlendirme yolculuğunu yapılandırır.
+        </p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Firma Başvurusu</h3>
+          <p>Firma profili, temel bilgiler, iletişim detayları ve değerlendirme kapsamı platformda oluşturulur.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Öz Değerlendirme</h3>
+          <p>Firma ilk dijital olgunluk öz değerlendirmesini tamamlar ve mevcut durumuna ilişkin yapılandırılmış bir ilk görünüm sunar.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Uzman İncelemesi</h3>
+          <p>METU DTX uzmanları, sunulan bilgileri kanıt incelemesi, görüşmeler, gözlemler ve gerektiğinde saha değerlendirmesiyle doğrular.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <h3>Olgunluk Analizi</h3>
+          <p>Platform; olgunluk skorlarını, gözlemleri, güçlü yönleri, gelişim alanlarını, önerileri ve stratejik bulguları yapılandırır.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-num">5</div>
+          <h3>Yol Haritası Planlama</h3>
+          <p>Öncelikli dönüşüm alanları proje kartlarına, sıralama mantığına ve fazlandırılmış dönüşüm yol haritasına dönüştürülür.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <h2>Kanıta Dayalı Dijital Olgunluk Değerlendirmesi</h2>
+        <p>
+          Değerlendirme modeli firma girdilerini, uzman yorumunu, olgunluk skorlamasını ve yol haritası odaklı analizi birleştirir. Değerlendirme kanıtlarını dönüşüm önceliklerine çevirmek için tasarlanmıştır.
+        </p>
+      </div>
+
+      <div class="model-grid">
+        <div class="model-card">
+          <h3 style="margin:0 0 12px;font-size:1.35rem;letter-spacing:-.04em;">Değerlendirme modeli</h3>
+          <p style="margin:0;color:var(--muted);line-height:1.65;">
+            Model, firmaları stratejik dönüşüm boyutları, kategori bazlı değerlendirme ve yalnızca beyana değil doğrulanmış kanıta dayalı 1–5 olgunluk mantığıyla değerlendirir.
+          </p>
+          <div class="metric-grid">
+            <div class="metric"><strong>7</strong><span>Stratejik eksen</span></div>
+            <div class="metric"><strong>45</strong><span>Değerlendirme kategorisi</span></div>
+            <div class="metric"><strong>84</strong><span>Kritik soru</span></div>
+            <div class="metric"><strong>1–5</strong><span>Olgunluk ölçeği</span></div>
+          </div>
+        </div>
+
+        <div class="model-card">
+          <h3 style="margin:0 0 12px;font-size:1.35rem;letter-spacing:-.04em;">Olgunluk mantığı</h3>
+          <p style="margin:0;color:var(--muted);line-height:1.65;">
+            Skorlama mantığı; manuel ve parçalı uygulamaları entegre, veri odaklı ve optimize dijital işletim modellerinden ayırmayı amaçlar.
+          </p>
+          <div class="maturity-scale">
+            <div class="scale-row">
+              <div class="scale-level">Seviye 1</div>
+              <div class="scale-track"><i style="width:20%"></i></div>
+            </div>
+            <div class="scale-row">
+              <div class="scale-level">Seviye 3</div>
+              <div class="scale-track"><i style="width:60%"></i></div>
+            </div>
+            <div class="scale-row">
+              <div class="scale-level">Seviye 5</div>
+              <div class="scale-track"><i style="width:100%"></i></div>
+            </div>
+          </div>
+          <p style="margin:16px 0 0;color:var(--muted);line-height:1.58;font-size:.94rem;">
+            Platform; skor kartlarını, radar grafikleri, kategori bazlı bulguları, GİFT/SWOT girdilerini, önerileri ve rapora hazır çıktıları destekler.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <h2>Firmalar Ne Alır?</h2>
+        <p>
+          Platform, değerlendirme girdilerini ve uzman incelemesini pratik dönüşüm çıktılarına dönüştürmek için tasarlanmıştır.
+        </p>
+      </div>
+
+      <div class="output-grid">
+        <div class="output-card">
+          <h3>Mevcut Durum Görünümü</h3>
+          <p>Firmanın dijital olgunluğunu, güçlü yönlerini, zayıf/gelişime açık alanlarını ve iyileştirme başlıklarını gösteren yapılandırılmış görünüm.</p>
+        </div>
+
+        <div class="output-card">
+          <h3>Olgunluk Raporu</h3>
+          <p>Eksen bazlı bulguları, gözlemleri, önerileri ve yönetici seviyesi içgörüleri kapsayan rapor.</p>
+        </div>
+
+        <div class="output-card">
+          <h3>Dönüşüm Yol Haritası</h3>
+          <p>Firma öncelikleri, proje sıralaması ve uygulama fizibilitesiyle uyumlu fazlandırılmış yol haritası.</p>
+        </div>
+
+        <div class="output-card">
+          <h3>Proje Kartları</h3>
+          <p>Kapsam, beklenen faydalar, zamanlama, riskler ve yatırım mantığını içeren uygulamaya hazır proje kartları.</p>
+        </div>
+      </div>
+
+      <div class="report-stack" aria-label="Örnek rapor çıktıları">
+        <div class="report">
+          <h4>Olgunluk Raporu</h4>
+          <div class="fake-lines"><i></i><i></i><i></i><i></i></div>
+          <div class="bar-stack" style="margin-top:18px;">
+            <div class="bar"><i style="width:72%"></i></div>
+            <div class="bar"><i style="width:46%"></i></div>
+            <div class="bar"><i style="width:64%"></i></div>
+          </div>
+        </div>
+
+        <div class="report">
+          <h4>Proje Kartı</h4>
+          <div class="fake-lines"><i></i><i></i><i></i><i></i></div>
+          <div class="roadmap-mini" style="grid-template-columns:repeat(3,minmax(0,1fr));">
+            <div class="road-item" style="background:#eef3ff;color:var(--navy);border-color:rgba(24,52,95,.12);"><small style="color:var(--muted);">Kapsam</small><strong>MES</strong></div>
+            <div class="road-item" style="background:#e7f4f1;color:var(--teal-2);border-color:rgba(15,118,110,.12);"><small style="color:var(--muted);">Risk</small><strong>Orta</strong></div>
+            <div class="road-item" style="background:#eef8f0;color:#236238;border-color:rgba(106,167,122,.16);"><small style="color:var(--muted);">Kapı</small><strong>Pilot</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <h2>Değerlendirme Sonrası: Doğrulama ve Uygulama Desteği</h2>
+        <p>
+          Değerlendirme çıktıları test-before-invest hizmetleri, pilot doğrulama, çözüm sağlayıcı eşleştirme, eğitim ve uygulama desteğiyle ilişkilendirilebilir.
+        </p>
+      </div>
+
+      <div class="lab-grid">
+        <div class="lab-card">
+          <span class="lab-tag">Yatırım öncesi test</span>
+          <h3>Akıllı ve Esnek Üretim Sistemleri</h3>
+          <p>Robotik, kalite güvence, bakım, yüzey hata tespiti ve üretim hücresi doğrulama.</p>
+        </div>
+
+        <div class="lab-card">
+          <span class="lab-tag">Veri ve Yapay Zeka</span>
+          <h3>Yapay Zeka ve Büyük Veri Analitiği</h3>
+          <p>Üretim optimizasyonu, veri işleme, kestirimci bakım, kalite analitiği ve yapay zeka destekli kullanım senaryoları.</p>
+        </div>
+
+        <div class="lab-card">
+          <span class="lab-tag">Simülasyon</span>
+          <h3>AR/VR ve Dijital İkiz</h3>
+          <p>Simülasyon, eğitim, dijital ikiz senaryoları, süreç görselleştirme ve operasyonel öğrenme ortamları.</p>
+        </div>
+
+        <div class="lab-card">
+          <span class="lab-tag">Dönüşüm</span>
+          <h3>İnovasyon ve Değişim Yönetimi</h3>
+          <p>Değişime hazırlık, yol haritasının uygulamaya çevrilmesi, pilot uygulama ve ikiz dönüşüm desteği.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="investment">
+      <div class="section-title">
+        <h2>Dönüşüm Projelerini Yatırım Kararlarına Hazırlama</h2>
+        <p>
+          Platform, olgunluk bulgularını proje kapsamı, beklenen etki, uygulama riskleri, finansman uyumu ve ölçülebilir çıktılarla ilişkilendirerek dönüşüm projelerinin daha net hazırlanmasını destekler.
+        </p>
+      </div>
+
+      <div class="investment-flow">
+        <div class="investment-node"><small>01</small><strong>Baz Durum</strong></div>
+        <div class="investment-node"><small>02</small><strong>Yol Haritası</strong></div>
+        <div class="investment-node"><small>03</small><strong>Proje Kartı</strong></div>
+        <div class="investment-node"><small>04</small><strong>Yatırım Mantığı</strong></div>
+        <div class="investment-node"><small>05</small><strong>Doğrulama</strong></div>
+        <div class="investment-node"><small>06</small><strong>İzleme</strong></div>
+      </div>
+    </section>
+
+    <section class="notice">
+      <strong>Erişim Notu</strong>
+      Başvuru ve giriş işlemleri canlı METU DTX dijital dönüşüm portalı olan dtxportal.metu.edu.tr adresine yönlendirilir.
+    </section>
+
+    <footer>
+      <p>
+        METU DTX — Orta Doğu Teknik Üniversitesi Dijital Dönüşüm ve İnovasyon Merkezi<br>
+        <a href="https://metudtx.org/tr/">metudtx.com</a> · <a href="https://dtx.metu.edu.tr">dtx.metu.edu.tr</a> · <a href="mailto:info@metudtx.com">info@metudtx.com</a>
+      </p>
+    </footer>
+  </main>
+</body>
+</html>
